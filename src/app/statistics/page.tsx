@@ -75,7 +75,7 @@ export default function StatisticsPage() {
     rank: i + 1,
     name: item.name,
     value: runId === 'value' ? fmtEur(item.totalValue) : `${item.count}`,
-    subtitle: runId === 'value' ? `${item.count} лидов` : fmtEur(item.totalValue),
+    subtitle: runId === 'value' ? `${item.count} ${t('stat.leads')}` : fmtEur(item.totalValue),
   }));
 
   const statusBreakdown = KANBAN_COLUMNS.map((col) => {
@@ -116,9 +116,9 @@ export default function StatisticsPage() {
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
-        <KpiCard label={t('stat.pipeline')} value={fmtEur(totalPipeline)} sub={`${activeLeads.length} лидов`} icon={Layers} accent />
-        <KpiCard label={t('stat.wonRevenue')} value={fmtEur(totalWon)} sub={`${wonLeads.length} сделок`} icon={Euro} />
-        <KpiCard label={t('stat.avgDeal')} value={fmtEur(avgDeal)} sub="средняя сделка" icon={TrendingUp} />
+        <KpiCard label={t('stat.pipeline')} value={fmtEur(totalPipeline)} sub={`${activeLeads.length} ${t('stat.leads')}`} icon={Layers} accent />
+        <KpiCard label={t('stat.wonRevenue')} value={fmtEur(totalWon)} sub={`${wonLeads.length} ${t('stat.deals')}`} icon={Euro} />
+        <KpiCard label={t('stat.avgDeal')} value={fmtEur(avgDeal)} sub={t('stat.avgDealSub')} icon={TrendingUp} />
         <KpiCard label={t('stat.conversion')} value={`${conversionRate}%`} sub="win rate" icon={Target} />
       </div>
 

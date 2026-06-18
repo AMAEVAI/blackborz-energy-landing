@@ -204,6 +204,8 @@ const ru: Dict = {
   'stat.lostLeads': 'Проиграно',
   'stat.uniqueCompanies': 'Уникальных компаний',
   'stat.leads': 'лидов',
+  'stat.deals': 'сделок',
+  'stat.avgDealSub': 'средняя сделка',
 };
 
 const fr: Dict = {
@@ -388,6 +390,8 @@ const fr: Dict = {
   'stat.lostLeads': 'Perdus',
   'stat.uniqueCompanies': 'Entreprises uniques',
   'stat.leads': 'prospects',
+  'stat.deals': 'affaires',
+  'stat.avgDealSub': 'affaire moyenne',
 };
 
 const en: Dict = {
@@ -572,6 +576,8 @@ const en: Dict = {
   'stat.lostLeads': 'Lost',
   'stat.uniqueCompanies': 'Unique companies',
   'stat.leads': 'leads',
+  'stat.deals': 'deals',
+  'stat.avgDealSub': 'average deal',
 };
 
 export const dict: Record<Lang, Dict> = { ru, fr, en };
