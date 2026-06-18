@@ -6,7 +6,7 @@ import { useT } from '@/lib/i18n/LanguageContext';
 export default function LeadsPage() {
   const { t } = useT();
   return (
-    <div className="p-4 md:p-8 h-screen flex flex-col">
+    <div className="p-4 md:p-8 h-[calc(100dvh-8.5rem)] md:h-screen flex flex-col">
       <div className="mb-6 flex-shrink-0">
         <div className="flex items-center gap-2 mb-1">
           <Users className="w-5 h-5 text-[#c8ff00]" />

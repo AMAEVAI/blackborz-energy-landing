@@ -55,24 +55,24 @@ export default function EntityPage({ type, config, icon: Icon }: { type: string;
 
   return (
     <div className="p-4 md:p-8">
-      <div className="mb-6 flex items-start justify-between">
+      <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Icon className="w-5 h-5 text-[#c8ff00]" />
+            <Icon className="w-4 h-4 text-[#c8ff00]" />
             <span className="text-xs text-[#c8ff00] font-bold uppercase tracking-widest">BLACKBORZ CRM</span>
           </div>
-          <h1 className="text-3xl font-black text-white">{t(config.titleKey)}</h1>
-          <p className="text-[#666] text-sm mt-1">{t(config.subtitleKey)}</p>
+          <h1 className="text-2xl md:text-3xl font-black text-white">{t(config.titleKey)}</h1>
+          <p className="text-[#666] text-xs md:text-sm mt-0.5">{t(config.subtitleKey)}</p>
         </div>
-        <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-4 py-2.5 bg-[#c8ff00] hover:bg-[#b8ef00] text-black rounded-xl text-sm font-bold transition-all">
+        <button onClick={() => setShowModal(true)} className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 bg-[#c8ff00] hover:bg-[#b8ef00] text-black rounded-xl text-sm font-bold transition-all flex-shrink-0">
           <Plus className="w-4 h-4" />
-          {t(config.addKey)}
+          <span className="hidden md:inline">{t(config.addKey)}</span>
         </button>
       </div>
 
-      <div className="relative mb-4 max-w-xs">
+      <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555]" />
-        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('common.search')} className="w-full pl-9 pr-3 py-2 bg-[#141414] border border-[#242424] rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#c8ff00]/40 transition-colors" />
+        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('common.search')} className="w-full md:max-w-xs pl-9 pr-3 py-2 bg-[#141414] border border-[#242424] rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#c8ff00]/40 transition-colors" />
       </div>
 
       <div className="bg-[#141414] border border-[#242424] rounded-2xl overflow-hidden">
@@ -87,30 +87,53 @@ export default function EntityPage({ type, config, icon: Icon }: { type: string;
             <p className="text-[#555] text-sm">{t('common.empty')}</p>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-[#1e1e1e]">
-                {tableFields.map((f) => (
-                  <th key={f.key} className="text-left px-5 py-3 text-xs text-[#666] font-medium uppercase tracking-wide">{t(f.labelKey)}</th>
-                ))}
-                <th className="px-5 py-3 w-12"></th>
-              </tr>
-            </thead>
-            <tbody>
+          <>
+            {/* Mobile: card list */}
+            <div className="md:hidden divide-y divide-[#1a1a1a]">
               {filtered.map((row) => (
-                <tr key={row.id} className="border-b border-[#1a1a1a] hover:bg-[#1a1a1a] transition-colors">
-                  {tableFields.map((f) => (
-                    <td key={f.key} className="px-5 py-3.5 text-[#ccc]">{renderCell(row, f.key)}</td>
-                  ))}
-                  <td className="px-5 py-3.5 text-right">
-                    <button onClick={() => handleDelete(row.id)} className="p-1.5 rounded-lg text-[#555] hover:text-red-400 hover:bg-red-400/10 transition-all">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </td>
-                </tr>
+                <div key={row.id} className="px-4 py-3 flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0 space-y-1">
+                    {tableFields.map((f, i) => (
+                      <div key={f.key} className={i === 0 ? 'font-semibold text-white text-sm truncate' : 'text-xs text-[#666] truncate'}>
+                        {i > 0 && <span className="text-[#444]">{t(f.labelKey)}: </span>}
+                        {renderCell(row, f.key)}
+                      </div>
+                    ))}
+                  </div>
+                  <button onClick={() => handleDelete(row.id)} className="p-1.5 rounded-lg text-[#444] hover:text-red-400 hover:bg-red-400/10 transition-all flex-shrink-0">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+            {/* Desktop: table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-[#1e1e1e]">
+                    {tableFields.map((f) => (
+                      <th key={f.key} className="text-left px-5 py-3 text-xs text-[#666] font-medium uppercase tracking-wide whitespace-nowrap">{t(f.labelKey)}</th>
+                    ))}
+                    <th className="px-5 py-3 w-12"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((row) => (
+                    <tr key={row.id} className="border-b border-[#1a1a1a] hover:bg-[#1a1a1a] transition-colors">
+                      {tableFields.map((f) => (
+                        <td key={f.key} className="px-5 py-3.5 text-[#ccc] whitespace-nowrap">{renderCell(row, f.key)}</td>
+                      ))}
+                      <td className="px-5 py-3.5 text-right">
+                        <button onClick={() => handleDelete(row.id)} className="p-1.5 rounded-lg text-[#555] hover:text-red-400 hover:bg-red-400/10 transition-all">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

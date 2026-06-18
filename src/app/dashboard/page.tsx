@@ -67,7 +67,7 @@ export default function DashboardPage() {
         <StatsCard icon={Target} label={t('dash.pipeline')} value={formatMoney(pipelineValue)} sub={t('dash.activeDeals')} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-2 bg-[#141414] border border-[#242424] rounded-2xl p-6">
           <h2 className="text-base font-bold text-white mb-4">{t('dash.pipelineByStage')}</h2>
           <div className="space-y-3">

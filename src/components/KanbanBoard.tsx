@@ -32,8 +32,8 @@ export default function KanbanBoard() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center gap-3 mb-5">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555]" />
           <input
             type="text"
@@ -45,21 +45,21 @@ export default function KanbanBoard() {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-[#c8ff00] hover:bg-[#b8ef00] text-black rounded-xl text-sm font-bold transition-all"
+          className="flex items-center gap-2 px-3 md:px-4 py-2 bg-[#c8ff00] hover:bg-[#b8ef00] text-black rounded-xl text-sm font-bold transition-all flex-shrink-0"
         >
           <Plus className="w-4 h-4" />
-          {t('leads.addLead')}
+          <span className="hidden md:inline">{t('leads.addLead')}</span>
         </button>
       </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex gap-4 overflow-x-auto pb-4 flex-1">
+        <div className="flex gap-3 overflow-x-auto pb-4 flex-1 snap-x snap-mandatory">
           {KANBAN_COLUMNS.map((col) => {
             const leads = getLeadsByStatus(col.id);
             const totalValue = leads.reduce((s, l) => s + l.value, 0);
 
             return (
-              <div key={col.id} className="flex-shrink-0 w-72 flex flex-col">
+              <div key={col.id} className="flex-shrink-0 w-[82vw] md:w-72 flex flex-col snap-start">
                 <div className={`flex items-center justify-between px-3 py-2.5 rounded-xl mb-2 ${col.bgColor} border ${col.borderColor}`}>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: col.color }} />
