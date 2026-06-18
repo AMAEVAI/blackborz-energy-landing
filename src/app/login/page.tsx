@@ -42,7 +42,7 @@ export default function LoginPage() {
           </div>
           <div className="text-center">
             <div className="text-2xl font-black text-white tracking-tight">BLACKBORZ</div>
-            <div className="text-[#c8ff00] text-sm font-bold tracking-widest uppercase">Energy CRM</div>
+            <div className="text-[#c8ff00] text-sm font-bold tracking-widest uppercase">CRM</div>
           </div>
         </div>
 
