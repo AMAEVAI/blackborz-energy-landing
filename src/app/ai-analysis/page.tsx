@@ -16,22 +16,29 @@ export default function AIAnalysisPage() {
   const [results, setResults] = useState<Record<string, AIAnalysisResult>>({});
   const [analyzing, setAnalyzing] = useState<Record<string, boolean>>({});
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const activeLeads = leads.filter((l) => !['won', 'lost'].includes(l.status));
 
   async function analyzeOne(lead: Lead) {
     setAnalyzing((p) => ({ ...p, [lead.id]: true }));
+    setErrorMsg(null);
     try {
       const res = await fetch('/api/ai-analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(lead),
       });
-      const data: AIAnalysisResult = await res.json();
-      setResults((p) => ({ ...p, [lead.id]: data }));
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMsg(data.error || 'Ошибка AI анализа');
+        return;
+      }
+      setResults((p) => ({ ...p, [lead.id]: data as AIAnalysisResult }));
       updateLead(lead.id, { aiScore: data.score, aiAnalysis: data.summary });
     } catch (e) {
       console.error(e);
+      setErrorMsg(e instanceof Error ? e.message : 'Ошибка сети');
     } finally {
       setAnalyzing((p) => ({ ...p, [lead.id]: false }));
     }
@@ -64,6 +71,13 @@ export default function AIAnalysisPage() {
           </button>
         </div>
       </div>
+
+      {errorMsg && (
+        <div className="mb-6 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-sm text-red-400 flex items-start gap-2">
+          <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+          <span>{errorMsg}</span>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-3">

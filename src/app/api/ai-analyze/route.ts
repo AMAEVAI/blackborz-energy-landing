@@ -7,6 +7,13 @@ const client = new Anthropic({
 
 export async function POST(req: NextRequest) {
   try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return NextResponse.json(
+        { error: 'ANTHROPIC_API_KEY не настроен в переменных окружения' },
+        { status: 500 }
+      );
+    }
+
     const lead = await req.json();
 
     const prompt = `Ты — AI-аналитик CRM системы компании BLACKBORZ ENERGY DRINK. Проанализируй лида и дай оценку.
@@ -43,10 +50,18 @@ export async function POST(req: NextRequest) {
     const content = message.content[0];
     if (content.type !== 'text') throw new Error('Unexpected response type');
 
-    const result = JSON.parse(content.text);
+    // Модель иногда оборачивает JSON в markdown ```json ... ``` — убираем
+    const cleaned = content.text
+      .replace(/^```json\s*/i, '')
+      .replace(/^```\s*/, '')
+      .replace(/\s*```$/, '')
+      .trim();
+
+    const result = JSON.parse(cleaned);
     return NextResponse.json(result);
   } catch (error) {
     console.error('AI analyze error:', error);
-    return NextResponse.json({ error: 'Ошибка AI анализа' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Неизвестная ошибка';
+    return NextResponse.json({ error: `Ошибка AI анализа: ${message}` }, { status: 500 });
   }
 }
