@@ -13,9 +13,11 @@ import LeadCard from './LeadCard';
 import LeadModal from './LeadModal';
 import AddLeadModal from './AddLeadModal';
 import { Plus, Search } from 'lucide-react';
+import { useT } from '@/lib/i18n/LanguageContext';
 
 export default function KanbanBoard() {
   const { getLeadsByStatus, moveLead, searchQuery, setSearchQuery } = useLeadsStore();
+  const { t } = useT();
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -36,7 +38,7 @@ export default function KanbanBoard() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555]" />
           <input
             type="text"
-            placeholder="Поиск лидов..."
+            placeholder={t('common.search')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-4 py-2 bg-[#141414] border border-[#242424] rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#c8ff00]/40 transition-colors"
@@ -47,7 +49,7 @@ export default function KanbanBoard() {
           className="flex items-center gap-2 px-4 py-2 bg-[#c8ff00] hover:bg-[#b8ef00] text-black rounded-xl text-sm font-bold transition-all"
         >
           <Plus className="w-4 h-4" />
-          Добавить лида
+          {t('leads.addLead')}
         </button>
       </div>
 
@@ -67,7 +69,7 @@ export default function KanbanBoard() {
                 <div className={`flex items-center justify-between px-3 py-2.5 rounded-xl mb-2 ${col.bgColor} border ${col.borderColor}`}>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: col.color }} />
-                    <span className="text-sm font-semibold text-white">{col.title}</span>
+                    <span className="text-sm font-semibold text-white">{t(`status.${col.id}`)}</span>
                     <span className="text-xs px-1.5 py-0.5 bg-black/30 text-white/60 rounded-full font-medium">
                       {leads.length}
                     </span>
@@ -114,7 +116,7 @@ export default function KanbanBoard() {
 
                       {leads.length === 0 && !snapshot.isDraggingOver && (
                         <div className="flex items-center justify-center h-16 text-xs text-[#333]">
-                          Нет лидов
+                          {t('common.empty')}
                         </div>
                       )}
                     </div>

@@ -3,12 +3,13 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Sidebar from '@/components/Sidebar';
 import DataProvider from '@/components/DataProvider';
+import { LanguageProvider } from '@/lib/i18n/LanguageContext';
 
 const inter = Inter({ subsets: ['cyrillic', 'latin'] });
 
 export const metadata: Metadata = {
-  title: 'BLACKBORZ ENERGY — CRM',
-  description: 'CRM система для управления продажами BLACKBORZ ENERGY DRINK',
+  title: 'BLACKBORZ — CRM',
+  description: 'CRM система BLACKBORZ',
 };
 
 const SUPABASE_CONFIGURED =
@@ -34,16 +35,18 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="ru">
       <body className={`${inter.className} bg-[#080808] text-white antialiased`}>
-        {showSidebar ? (
-          <>
-            <Sidebar />
-            <main className="pl-64 min-h-screen">
-              <DataProvider>{children}</DataProvider>
-            </main>
-          </>
-        ) : (
-          <main className="min-h-screen">{children}</main>
-        )}
+        <LanguageProvider>
+          {showSidebar ? (
+            <>
+              <Sidebar />
+              <main className="pl-64 min-h-screen">
+                <DataProvider>{children}</DataProvider>
+              </main>
+            </>
+          ) : (
+            <main className="min-h-screen">{children}</main>
+          )}
+        </LanguageProvider>
       </body>
     </html>
   );

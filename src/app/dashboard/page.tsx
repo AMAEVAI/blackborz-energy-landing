@@ -3,6 +3,7 @@ import { useLeadsStore } from '@/store/leadsStore';
 import StatsCard from '@/components/StatsCard';
 import { TrendingUp, Users, Trophy, DollarSign, BarChart3, Target, Zap, Loader2 } from 'lucide-react';
 import { KANBAN_COLUMNS } from '@/lib/mockData';
+import { useT } from '@/lib/i18n/LanguageContext';
 import Link from 'next/link';
 
 function formatMoney(v: number) {
@@ -13,13 +14,14 @@ function formatMoney(v: number) {
 
 export default function DashboardPage() {
   const { leads, getStats, isLoading } = useLeadsStore();
+  const { t, lang } = useT();
 
   if (isLoading) {
     return (
       <div className="p-8 flex items-center justify-center min-h-screen">
         <div className="flex items-center gap-3 text-[#666]">
           <Loader2 className="w-5 h-5 animate-spin text-[#c8ff00]" />
-          <span className="text-sm">Загрузка данных...</span>
+          <span className="text-sm">{t('common.loading')}</span>
         </div>
       </div>
     );
@@ -47,45 +49,39 @@ export default function DashboardPage() {
 
   return (
     <div className="p-8">
-      {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">
           <Zap className="w-5 h-5 text-[#c8ff00]" fill="currentColor" />
-          <span className="text-xs text-[#c8ff00] font-bold uppercase tracking-widest">BLACKBORZ ENERGY CRM</span>
+          <span className="text-xs text-[#c8ff00] font-bold uppercase tracking-widest">BLACKBORZ CRM</span>
         </div>
-        <h1 className="text-3xl font-black text-white">Дашборд</h1>
-        <p className="text-[#666] text-sm mt-1">Общая картина продаж энергетиков</p>
+        <h1 className="text-3xl font-black text-white">{t('nav.dashboard')}</h1>
+        <p className="text-[#666] text-sm mt-1">{t('dash.subtitle')}</p>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-        <StatsCard icon={Users} label="Всего лидов" value={stats.totalLeads} sub="в базе" />
-        <StatsCard icon={TrendingUp} label="Новые" value={stats.newLeads} sub="требуют внимания" />
-        <StatsCard icon={Trophy} label="Выиграно" value={stats.wonDeals} sub="сделок" accent />
-        <StatsCard icon={DollarSign} label="Выручка" value={formatMoney(stats.totalValue)} sub="закрытые сделки" accent />
-        <StatsCard icon={BarChart3} label="Конверсия" value={`${stats.conversionRate}%`} sub="win rate" />
-        <StatsCard icon={Target} label="Пайплайн" value={formatMoney(pipelineValue)} sub="активные сделки" />
+        <StatsCard icon={Users} label={t('dash.totalLeads')} value={stats.totalLeads} sub={t('dash.inBase')} />
+        <StatsCard icon={TrendingUp} label={t('dash.new')} value={stats.newLeads} sub={t('dash.needAttention')} />
+        <StatsCard icon={Trophy} label={t('dash.won')} value={stats.wonDeals} sub={t('dash.deals')} accent />
+        <StatsCard icon={DollarSign} label={t('dash.revenue')} value={formatMoney(stats.totalValue)} sub={t('dash.closedDeals')} accent />
+        <StatsCard icon={BarChart3} label={t('dash.conversion')} value={`${stats.conversionRate}%`} sub={t('dash.winRate')} />
+        <StatsCard icon={Target} label={t('dash.pipeline')} value={formatMoney(pipelineValue)} sub={t('dash.activeDeals')} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Pipeline by stage */}
         <div className="lg:col-span-2 bg-[#141414] border border-[#242424] rounded-2xl p-6">
-          <h2 className="text-base font-bold text-white mb-4">Пайплайн по этапам</h2>
+          <h2 className="text-base font-bold text-white mb-4">{t('dash.pipelineByStage')}</h2>
           <div className="space-y-3">
             {byStatus.map((col) => {
               const maxVal = Math.max(...byStatus.map((c) => c.value), 1);
               const pct = (col.value / maxVal) * 100;
               return (
                 <div key={col.id} className="flex items-center gap-3">
-                  <div className="w-24 text-xs text-[#666] flex-shrink-0">{col.title}</div>
+                  <div className="w-24 text-xs text-[#666] flex-shrink-0">{t(`status.${col.id}`)}</div>
                   <div className="flex-1 h-2 bg-[#1a1a1a] rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{ width: `${pct}%`, backgroundColor: col.color }}
-                    />
+                    <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: col.color }} />
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0 w-32 justify-end">
-                    <span className="text-xs text-[#555]">{col.count} лидов</span>
+                    <span className="text-xs text-[#555]">{col.count} {t('dash.leadsCount')}</span>
                     <span className="text-xs font-medium text-white">{formatMoney(col.value)}</span>
                   </div>
                 </div>
@@ -94,13 +90,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* High priority */}
         <div className="bg-[#141414] border border-[#242424] rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-bold text-white">Горячие лиды</h2>
-            <Link href="/leads" className="text-xs text-[#c8ff00] hover:underline">
-              Все →
-            </Link>
+            <h2 className="text-base font-bold text-white">{t('dash.hotLeads')}</h2>
+            <Link href="/leads" className="text-xs text-[#c8ff00] hover:underline">{t('dash.all')}</Link>
           </div>
           <div className="space-y-3">
             {highPriority.length > 0 ? (
@@ -115,14 +108,13 @@ export default function DashboardPage() {
                 </div>
               ))
             ) : (
-              <div className="text-center py-6 text-[#444] text-sm">Нет горячих лидов</div>
+              <div className="text-center py-6 text-[#444] text-sm">{t('dash.noHotLeads')}</div>
             )}
           </div>
         </div>
 
-        {/* Recent activity */}
         <div className="lg:col-span-3 bg-[#141414] border border-[#242424] rounded-2xl p-6">
-          <h2 className="text-base font-bold text-white mb-4">Последняя активность</h2>
+          <h2 className="text-base font-bold text-white mb-4">{t('dash.recentActivity')}</h2>
           <div className="space-y-2">
             {recentLeads.map((lead) => {
               const col = KANBAN_COLUMNS.find((c) => c.id === lead.status);
@@ -135,10 +127,10 @@ export default function DashboardPage() {
                     <span className="text-sm text-[#666]">{lead.company}</span>
                   </div>
                   <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: `${col?.color}20`, color: col?.color }}>
-                    {col?.title}
+                    {col ? t(`status.${col.id}`) : ''}
                   </span>
                   <span className="text-xs text-[#555] flex-shrink-0">
-                    {new Date(lead.updatedAt).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' })}
+                    {new Date(lead.updatedAt).toLocaleDateString(lang === 'ru' ? 'ru-RU' : lang === 'fr' ? 'fr-FR' : 'en-US', { day: '2-digit', month: 'short' })}
                   </span>
                 </div>
               );
