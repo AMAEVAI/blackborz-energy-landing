@@ -24,7 +24,6 @@ export default function Sidebar() {
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-[#0d0d0d] border-r border-[#1e1e1e] flex flex-col z-40">
-      {/* Logo */}
       <div className="px-6 py-5 border-b border-[#1e1e1e]">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-[#c8ff00] rounded-lg flex items-center justify-center">
@@ -37,7 +36,6 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1">
         {navItems.map(({ href, icon: Icon, label }) => {
           const isActive = pathname === href || pathname.startsWith(href + '/');
@@ -58,7 +56,6 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Footer */}
       <div className="px-3 py-4 border-t border-[#1e1e1e] space-y-1">
         <Link
           href="/settings"
