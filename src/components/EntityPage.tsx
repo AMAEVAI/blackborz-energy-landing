@@ -54,7 +54,7 @@ export default function EntityPage({ type, config, icon: Icon }: { type: string;
   });
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="mb-6 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2 mb-1">

@@ -1,7 +1,7 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import Sidebar from '@/components/Sidebar';
+import AppShell from '@/components/AppShell';
 import DataProvider from '@/components/DataProvider';
 import { LanguageProvider } from '@/lib/i18n/LanguageContext';
 
@@ -10,6 +10,12 @@ const inter = Inter({ subsets: ['cyrillic', 'latin'] });
 export const metadata: Metadata = {
   title: 'BLACKBORZ — CRM',
   description: 'CRM система BLACKBORZ',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 const SUPABASE_CONFIGURED =
@@ -37,12 +43,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={`${inter.className} bg-[#080808] text-white antialiased`}>
         <LanguageProvider>
           {showSidebar ? (
-            <>
-              <Sidebar />
-              <main className="pl-64 min-h-screen">
-                <DataProvider>{children}</DataProvider>
-              </main>
-            </>
+            <AppShell>
+              <DataProvider>{children}</DataProvider>
+            </AppShell>
           ) : (
             <main className="min-h-screen">{children}</main>
           )}

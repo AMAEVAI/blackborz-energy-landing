@@ -56,7 +56,7 @@ export default function AIAnalysisPage() {
   const selectedResult = selectedLeadId ? results[selectedLeadId] : null;
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">
           <Brain className="w-5 h-5 text-[#c8ff00]" />

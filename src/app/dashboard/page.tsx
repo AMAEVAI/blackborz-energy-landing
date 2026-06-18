@@ -48,7 +48,7 @@ export default function DashboardPage() {
     .slice(0, 3);
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">
           <Zap className="w-5 h-5 text-[#c8ff00]" fill="currentColor" />
@@ -58,7 +58,7 @@ export default function DashboardPage() {
         <p className="text-[#666] text-sm mt-1">{t('dash.subtitle')}</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-4 mb-6 md:mb-8">
         <StatsCard icon={Users} label={t('dash.totalLeads')} value={stats.totalLeads} sub={t('dash.inBase')} />
         <StatsCard icon={TrendingUp} label={t('dash.new')} value={stats.newLeads} sub={t('dash.needAttention')} />
         <StatsCard icon={Trophy} label={t('dash.won')} value={stats.wonDeals} sub={t('dash.deals')} accent />
