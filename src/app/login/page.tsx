@@ -1,19 +1,21 @@
 'use client';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
-import { Zap, Loader2, Eye, EyeOff, CheckCircle } from 'lucide-react';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Zap, CheckCircle } from 'lucide-react';
 import { Lang, LANGS, loginText } from '@/lib/i18n/login';
 
 export default function LoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [focusedInput, setFocusedInput] = useState<'email' | 'password' | null>(null);
   const [lang, setLang] = useState<Lang>('ru');
 
   useEffect(() => {
@@ -33,71 +35,98 @@ export default function LoginPage() {
   }
 
   const t = loginText[lang];
-
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess('');
-
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      setError(t.error);
-      setLoading(false);
-    } else {
-      router.push('/dashboard');
-      router.refresh();
-    }
-  }
-
-  async function handleRegister(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess('');
-
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
-    });
-
-    if (error) {
-      setError(error.message || t.registerError);
-      setLoading(false);
-      return;
-    }
-
-    // Если подтверждение email выключено — сразу есть сессия, входим
-    if (data.session) {
-      router.push('/dashboard');
-      router.refresh();
-      return;
-    }
-
-    // Если подтверждение включено — просим проверить почту
-    setSuccess(t.checkEmail);
-    setLoading(false);
-  }
-
   const isRegister = mode === 'register';
 
-  return (
-    <div className="min-h-screen bg-[#080808] flex items-center justify-center p-4">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#c8ff00]/5 rounded-full blur-[120px]" />
-      </div>
+  // 3D card tilt
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateX = useTransform(mouseY, [-300, 300], [10, -10]);
+  const rotateY = useTransform(mouseX, [-300, 300], [-10, 10]);
 
-      <div className="absolute top-5 right-5 flex items-center gap-1 bg-[#0d0d0d] border border-[#1e1e1e] rounded-xl p-1">
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set(e.clientX - rect.left - rect.width / 2);
+    mouseY.set(e.clientY - rect.top - rect.height / 2);
+  };
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    setSuccess('');
+    const supabase = createClient();
+
+    if (isRegister) {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      });
+      if (error) {
+        setError(error.message || t.registerError);
+        setIsLoading(false);
+        return;
+      }
+      if (data.session) {
+        router.push('/dashboard');
+        router.refresh();
+        return;
+      }
+      setSuccess(t.checkEmail);
+      setIsLoading(false);
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        setError(t.error);
+        setIsLoading(false);
+      } else {
+        router.push('/dashboard');
+        router.refresh();
+      }
+    }
+  }
+
+  return (
+    <div className="min-h-screen w-full bg-black relative overflow-hidden flex items-center justify-center">
+      {/* Background gradient — lime/black */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#c8ff00]/15 via-[#222a00]/40 to-black" />
+
+      {/* Noise texture */}
+      <div
+        className="absolute inset-0 opacity-[0.03] mix-blend-soft-light"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          backgroundSize: '200px 200px',
+        }}
+      />
+
+      {/* Radial glows */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120vh] h-[60vh] rounded-b-[50%] bg-[#c8ff00]/10 blur-[80px]" />
+      <motion.div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[100vh] h-[60vh] rounded-b-full bg-[#c8ff00]/10 blur-[60px]"
+        animate={{ opacity: [0.1, 0.25, 0.1], scale: [0.98, 1.02, 0.98] }}
+        transition={{ duration: 8, repeat: Infinity, repeatType: 'mirror' }}
+      />
+      <motion.div
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90vh] h-[90vh] rounded-t-full bg-[#c8ff00]/10 blur-[60px]"
+        animate={{ opacity: [0.2, 0.4, 0.2], scale: [1, 1.1, 1] }}
+        transition={{ duration: 6, repeat: Infinity, repeatType: 'mirror', delay: 1 }}
+      />
+      <div className="absolute left-1/4 top-1/4 w-96 h-96 bg-[#c8ff00]/5 rounded-full blur-[100px] animate-pulse opacity-40" />
+      <div className="absolute right-1/4 bottom-1/4 w-96 h-96 bg-[#c8ff00]/5 rounded-full blur-[100px] animate-pulse delay-1000 opacity-40" />
+
+      {/* Language switcher */}
+      <div className="absolute top-5 right-5 z-20 flex items-center gap-1 bg-black/40 backdrop-blur-xl border border-white/10 rounded-xl p-1">
         {LANGS.map(({ code, label }) => (
           <button
             key={code}
             onClick={() => changeLang(code)}
             className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
-              lang === code ? 'bg-[#c8ff00] text-black' : 'text-[#888] hover:text-white'
+              lang === code ? 'bg-[#c8ff00] text-black' : 'text-white/60 hover:text-white'
             }`}
           >
             {label}
@@ -105,78 +134,225 @@ export default function LoginPage() {
         ))}
       </div>
 
-      <div className="relative w-full max-w-sm">
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 bg-[#c8ff00] rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-[#c8ff00]/20">
-            <Zap className="w-8 h-8 text-black" fill="currentColor" />
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-black text-white tracking-tight">BLACKBORZ</div>
-            <div className="text-[#c8ff00] text-sm font-bold tracking-widest uppercase">{t.subtitle}</div>
-          </div>
-        </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="w-full max-w-sm relative z-10 px-4"
+        style={{ perspective: 1500 }}
+      >
+        <motion.div
+          className="relative"
+          style={{ rotateX, rotateY }}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="relative group">
+            {/* Card glow */}
+            <motion.div
+              className="absolute -inset-[1px] rounded-2xl opacity-0 group-hover:opacity-70 transition-opacity duration-700"
+              animate={{
+                boxShadow: [
+                  '0 0 10px 2px rgba(200,255,0,0.05)',
+                  '0 0 15px 5px rgba(200,255,0,0.08)',
+                  '0 0 10px 2px rgba(200,255,0,0.05)',
+                ],
+                opacity: [0.2, 0.4, 0.2],
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', repeatType: 'mirror' }}
+            />
 
-        <div className="bg-[#0d0d0d] border border-[#1e1e1e] rounded-2xl p-6">
-          <h1 className="text-base font-bold text-white mb-1">{isRegister ? t.registerTitle : t.title}</h1>
-          <p className="text-sm text-[#555] mb-6">{isRegister ? t.registerDescription : t.description}</p>
-
-          <form onSubmit={isRegister ? handleRegister : handleLogin} className="space-y-4">
-            <div>
-              <label className="text-xs text-[#666] font-medium uppercase tracking-wide block mb-1.5">{t.emailLabel}</label>
-              <input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t.emailPlaceholder} className="w-full px-3 py-2.5 bg-[#141414] border border-[#242424] rounded-xl text-sm text-white placeholder:text-[#444] focus:outline-none focus:border-[#c8ff00]/40 transition-colors" />
+            {/* Traveling light beams */}
+            <div className="absolute -inset-[1px] rounded-2xl overflow-hidden">
+              <motion.div
+                className="absolute top-0 left-0 h-[3px] w-[50%] bg-gradient-to-r from-transparent via-[#c8ff00] to-transparent opacity-70"
+                initial={{ filter: 'blur(2px)' }}
+                animate={{ left: ['-50%', '100%'], opacity: [0.3, 0.7, 0.3], filter: ['blur(1px)', 'blur(2.5px)', 'blur(1px)'] }}
+                transition={{
+                  left: { duration: 2.5, ease: 'easeInOut', repeat: Infinity, repeatDelay: 1 },
+                  opacity: { duration: 1.2, repeat: Infinity, repeatType: 'mirror' },
+                  filter: { duration: 1.5, repeat: Infinity, repeatType: 'mirror' },
+                }}
+              />
+              <motion.div
+                className="absolute top-0 right-0 h-[50%] w-[3px] bg-gradient-to-b from-transparent via-[#c8ff00] to-transparent opacity-70"
+                initial={{ filter: 'blur(2px)' }}
+                animate={{ top: ['-50%', '100%'], opacity: [0.3, 0.7, 0.3], filter: ['blur(1px)', 'blur(2.5px)', 'blur(1px)'] }}
+                transition={{
+                  top: { duration: 2.5, ease: 'easeInOut', repeat: Infinity, repeatDelay: 1, delay: 0.6 },
+                  opacity: { duration: 1.2, repeat: Infinity, repeatType: 'mirror', delay: 0.6 },
+                  filter: { duration: 1.5, repeat: Infinity, repeatType: 'mirror', delay: 0.6 },
+                }}
+              />
+              <motion.div
+                className="absolute bottom-0 right-0 h-[3px] w-[50%] bg-gradient-to-r from-transparent via-[#c8ff00] to-transparent opacity-70"
+                initial={{ filter: 'blur(2px)' }}
+                animate={{ right: ['-50%', '100%'], opacity: [0.3, 0.7, 0.3], filter: ['blur(1px)', 'blur(2.5px)', 'blur(1px)'] }}
+                transition={{
+                  right: { duration: 2.5, ease: 'easeInOut', repeat: Infinity, repeatDelay: 1, delay: 1.2 },
+                  opacity: { duration: 1.2, repeat: Infinity, repeatType: 'mirror', delay: 1.2 },
+                  filter: { duration: 1.5, repeat: Infinity, repeatType: 'mirror', delay: 1.2 },
+                }}
+              />
+              <motion.div
+                className="absolute bottom-0 left-0 h-[50%] w-[3px] bg-gradient-to-b from-transparent via-[#c8ff00] to-transparent opacity-70"
+                initial={{ filter: 'blur(2px)' }}
+                animate={{ bottom: ['-50%', '100%'], opacity: [0.3, 0.7, 0.3], filter: ['blur(1px)', 'blur(2.5px)', 'blur(1px)'] }}
+                transition={{
+                  bottom: { duration: 2.5, ease: 'easeInOut', repeat: Infinity, repeatDelay: 1, delay: 1.8 },
+                  opacity: { duration: 1.2, repeat: Infinity, repeatType: 'mirror', delay: 1.8 },
+                  filter: { duration: 1.5, repeat: Infinity, repeatType: 'mirror', delay: 1.8 },
+                }}
+              />
             </div>
 
-            <div>
-              <label className="text-xs text-[#666] font-medium uppercase tracking-wide block mb-1.5">{t.passwordLabel}</label>
-              <div className="relative">
-                <input type={showPassword ? 'text' : 'password'} required minLength={6} autoComplete={isRegister ? 'new-password' : 'current-password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-3 py-2.5 pr-10 bg-[#141414] border border-[#242424] rounded-xl text-sm text-white placeholder:text-[#444] focus:outline-none focus:border-[#c8ff00]/40 transition-colors" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#888] transition-colors">
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+            {/* Glass card */}
+            <div className="relative bg-black/40 backdrop-blur-xl rounded-2xl p-6 border border-white/[0.08] shadow-2xl overflow-hidden">
+              <div
+                className="absolute inset-0 opacity-[0.03]"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, white 0.5px, transparent 0.5px), linear-gradient(45deg, white 0.5px, transparent 0.5px)`,
+                  backgroundSize: '30px 30px',
+                }}
+              />
+
+              {/* Logo + header */}
+              <div className="text-center space-y-1 mb-5 relative z-10">
+                <motion.div
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: 'spring', duration: 0.8 }}
+                  className="mx-auto w-12 h-12 rounded-2xl bg-[#c8ff00] flex items-center justify-center relative overflow-hidden shadow-lg shadow-[#c8ff00]/20"
+                >
+                  <Zap className="w-7 h-7 text-black" fill="currentColor" />
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="pt-2"
+                >
+                  <div className="text-xl font-black tracking-tight text-white">BLACKBORZ</div>
+                  <div className="text-[#c8ff00] text-xs font-bold tracking-widest uppercase">{t.subtitle}</div>
+                </motion.div>
+
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-white/60 text-xs pt-1"
+                >
+                  {isRegister ? t.registerDescription : t.description}
+                </motion.p>
               </div>
-              {isRegister && <p className="text-xs text-[#555] mt-1.5">{t.passwordHint}</p>}
+
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
+                <div className="space-y-3">
+                  {/* Email */}
+                  <motion.div className={`relative ${focusedInput === 'email' ? 'z-10' : ''}`} whileHover={{ scale: 1.01 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
+                    <div className="relative flex items-center overflow-hidden rounded-lg">
+                      <Mail className={`absolute left-3 w-4 h-4 transition-all duration-300 ${focusedInput === 'email' ? 'text-[#c8ff00]' : 'text-white/40'}`} />
+                      <input
+                        type="email"
+                        required
+                        autoComplete="email"
+                        placeholder={t.emailPlaceholder}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        onFocus={() => setFocusedInput('email')}
+                        onBlur={() => setFocusedInput(null)}
+                        className="w-full bg-white/5 border border-transparent focus:border-[#c8ff00]/40 text-white placeholder:text-white/30 h-10 rounded-lg transition-all duration-300 pl-10 pr-3 focus:bg-white/10 outline-none text-sm"
+                      />
+                    </div>
+                  </motion.div>
+
+                  {/* Password */}
+                  <motion.div className={`relative ${focusedInput === 'password' ? 'z-10' : ''}`} whileHover={{ scale: 1.01 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
+                    <div className="relative flex items-center overflow-hidden rounded-lg">
+                      <Lock className={`absolute left-3 w-4 h-4 transition-all duration-300 ${focusedInput === 'password' ? 'text-[#c8ff00]' : 'text-white/40'}`} />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        minLength={6}
+                        autoComplete={isRegister ? 'new-password' : 'current-password'}
+                        placeholder={t.passwordLabel}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        onFocus={() => setFocusedInput('password')}
+                        onBlur={() => setFocusedInput(null)}
+                        className="w-full bg-white/5 border border-transparent focus:border-[#c8ff00]/40 text-white placeholder:text-white/30 h-10 rounded-lg transition-all duration-300 pl-10 pr-10 focus:bg-white/10 outline-none text-sm"
+                      />
+                      <div onClick={() => setShowPassword(!showPassword)} className="absolute right-3 cursor-pointer">
+                        {showPassword ? (
+                          <Eye className="w-4 h-4 text-white/40 hover:text-white transition-colors duration-300" />
+                        ) : (
+                          <EyeOff className="w-4 h-4 text-white/40 hover:text-white transition-colors duration-300" />
+                        )}
+                      </div>
+                    </div>
+                    {isRegister && <p className="text-xs text-white/40 mt-1.5 pl-1">{t.passwordHint}</p>}
+                  </motion.div>
+                </div>
+
+                {error && <div className="px-3 py-2.5 bg-red-500/10 border border-red-500/20 rounded-lg text-xs text-red-400">{error}</div>}
+                {success && (
+                  <div className="px-3 py-2.5 bg-[#c8ff00]/10 border border-[#c8ff00]/20 rounded-lg text-xs text-[#c8ff00] flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>{success}</span>
+                  </div>
+                )}
+
+                {/* Submit */}
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={isLoading} className="w-full relative group/button mt-2">
+                  <div className="absolute inset-0 bg-[#c8ff00]/30 rounded-lg blur-lg opacity-0 group-hover/button:opacity-70 transition-opacity duration-300" />
+                  <div className="relative overflow-hidden bg-[#c8ff00] text-black font-bold h-10 rounded-lg transition-all duration-300 flex items-center justify-center">
+                    <AnimatePresence mode="wait">
+                      {isLoading ? (
+                        <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center">
+                          <div className="w-4 h-4 border-2 border-black/70 border-t-transparent rounded-full animate-spin" />
+                        </motion.div>
+                      ) : (
+                        <motion.span key="text" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center gap-1 text-sm font-bold">
+                          {isRegister ? t.registerCta : t.signIn}
+                          <ArrowRight className="w-3.5 h-3.5 group-hover/button:translate-x-1 transition-transform duration-300" />
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </motion.button>
+
+                {/* Mode toggle */}
+                <div className="text-center text-xs text-white/50 pt-1">
+                  {isRegister ? (
+                    <>
+                      {t.toLogin}{' '}
+                      <button type="button" onClick={() => switchMode('login')} className="text-[#c8ff00] font-medium hover:underline">
+                        {t.toLoginLink}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {t.toRegister}{' '}
+                      <button type="button" onClick={() => switchMode('register')} className="text-[#c8ff00] font-medium hover:underline">
+                        {t.toRegisterLink}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </form>
             </div>
-
-            {error && <div className="px-3 py-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-sm text-red-400">{error}</div>}
-            {success && (
-              <div className="px-3 py-2.5 bg-[#c8ff00]/10 border border-[#c8ff00]/20 rounded-xl text-sm text-[#c8ff00] flex items-start gap-2">
-                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>{success}</span>
-              </div>
-            )}
-
-            <button type="submit" disabled={loading} className="w-full py-2.5 bg-[#c8ff00] hover:bg-[#b8ef00] text-black font-bold rounded-xl text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-              {isRegister ? (loading ? t.registering : t.registerCta) : (loading ? t.signingIn : t.signIn)}
-            </button>
-          </form>
-
-          <div className="mt-5 pt-5 border-t border-[#1e1e1e] text-center text-sm text-[#666]">
-            {isRegister ? (
-              <>
-                {t.toLogin}{' '}
-                <button onClick={() => switchMode('login')} className="text-[#c8ff00] font-medium hover:underline">
-                  {t.toLoginLink}
-                </button>
-              </>
-            ) : (
-              <>
-                {t.toRegister}{' '}
-                <button onClick={() => switchMode('register')} className="text-[#c8ff00] font-medium hover:underline">
-                  {t.toRegisterLink}
-                </button>
-              </>
-            )}
           </div>
-        </div>
+        </motion.div>
 
-        <p className="text-center text-xs text-[#444] mt-4">
+        <p className="text-center text-xs text-white/40 mt-5">
           {t.help}{' '}
           <a href="mailto:amaev.pro@gmail.com" className="text-[#c8ff00] hover:underline">
             {t.helpLink}
           </a>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }
