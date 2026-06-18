@@ -8,23 +8,16 @@ import {
   ArrowRight, ChevronDown, Trash2
 } from 'lucide-react';
 import { KANBAN_COLUMNS } from '@/lib/mockData';
+import { useT } from '@/lib/i18n/LanguageContext';
 
 interface LeadModalProps {
   lead: Lead;
   onClose: () => void;
 }
 
-const sourceLabels: Record<string, string> = {
-  website: 'Сайт',
-  referral: 'Рекомендация',
-  social: 'Соцсети',
-  cold_call: 'Холодный звонок',
-  event: 'Мероприятие',
-  other: 'Другое',
-};
-
 export default function LeadModal({ lead, onClose }: LeadModalProps) {
   const { updateLead, deleteLead, moveLead, setIsAnalyzing, setIsSummarizing, isAnalyzing, isSummarizing } = useLeadsStore();
+  const { t } = useT();
   const [aiResult, setAiResult] = useState<AIAnalysisResult | null>(
     lead.aiScore
       ? {
@@ -83,7 +76,7 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
   }
 
   function handleDelete() {
-    if (confirm('Удалить лида?')) {
+    if (confirm(t('modal.confirmDelete'))) {
       deleteLead(lead.id);
       onClose();
     }
@@ -94,12 +87,6 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
     medium: 'text-amber-400',
     high: 'text-[#c8ff00]',
     very_high: 'text-emerald-400',
-  };
-  const potentialLabels = {
-    low: 'Низкий',
-    medium: 'Средний',
-    high: 'Высокий',
-    very_high: 'Очень высокий',
   };
 
   return (
@@ -141,7 +128,7 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
             className="flex items-center gap-2 px-3 py-1.5 bg-[#c8ff00]/10 hover:bg-[#c8ff00]/20 border border-[#c8ff00]/20 text-[#c8ff00] rounded-lg text-sm font-medium transition-all disabled:opacity-50"
           >
             {isAnalyzing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Brain className="w-3.5 h-3.5" />}
-            AI Анализ
+            {t('nav.ai')}
           </button>
           <button
             onClick={handleSummarize}
@@ -149,7 +136,7 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
             className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 rounded-lg text-sm font-medium transition-all disabled:opacity-50"
           >
             {isSummarizing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileText className="w-3.5 h-3.5" />}
-            Резюме
+            {t('sum.leadSummary')}
           </button>
 
           <div className="relative ml-auto">
@@ -157,7 +144,7 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
               onClick={() => setShowStatusMenu(!showStatusMenu)}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a1a] border border-[#2a2a2a] text-[#888] hover:text-white rounded-lg text-sm transition-all"
             >
-              Переместить
+              {t('modal.move')}
               <ChevronDown className="w-3.5 h-3.5" />
             </button>
             {showStatusMenu && (
@@ -192,9 +179,9 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
                   : 'border-transparent text-[#666] hover:text-white'
               }`}
             >
-              {tab === 'info' && 'Информация'}
-              {tab === 'ai' && 'AI Анализ'}
-              {tab === 'summary' && 'Резюме'}
+              {tab === 'info' && t('modal.info')}
+              {tab === 'ai' && t('nav.ai')}
+              {tab === 'summary' && t('sum.leadSummary')}
             </button>
           ))}
         </div>
@@ -204,13 +191,13 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <InfoBlock label="Email" icon={<Mail className="w-3.5 h-3.5" />} value={lead.email} />
-                <InfoBlock label="Телефон" icon={<Phone className="w-3.5 h-3.5" />} value={lead.phone} />
-                <InfoBlock label="Источник" icon={<TrendingUp className="w-3.5 h-3.5" />} value={sourceLabels[lead.source] || lead.source} />
-                <InfoBlock label="Ценность" icon={<TrendingUp className="w-3.5 h-3.5" />} value={lead.value.toLocaleString('fr-FR') + ' €'} highlight />
+                <InfoBlock label={t('modal.phone')} icon={<Phone className="w-3.5 h-3.5" />} value={lead.phone} />
+                <InfoBlock label={t('modal.source')} icon={<TrendingUp className="w-3.5 h-3.5" />} value={t(`source.${lead.source}`) || lead.source} />
+                <InfoBlock label={t('modal.value')} icon={<TrendingUp className="w-3.5 h-3.5" />} value={lead.value.toLocaleString('fr-FR') + ' €'} highlight />
               </div>
               {lead.notes && (
                 <div className="bg-[#141414] border border-[#242424] rounded-xl p-4">
-                  <div className="text-xs text-[#666] mb-2 font-medium uppercase tracking-wide">Заметки</div>
+                  <div className="text-xs text-[#666] mb-2 font-medium uppercase tracking-wide">{t('modal.notes')}</div>
                   <p className="text-[#ccc] text-sm leading-relaxed">{lead.notes}</p>
                 </div>
               )}
@@ -218,7 +205,7 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <Tag className="w-3.5 h-3.5 text-[#666]" />
-                    <span className="text-xs text-[#666] font-medium uppercase tracking-wide">Теги</span>
+                    <span className="text-xs text-[#666] font-medium uppercase tracking-wide">{t('modal.tags')}</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {lead.tags.map((tag) => (
@@ -237,18 +224,18 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
               {!aiResult ? (
                 <div className="text-center py-10">
                   <Brain className="w-10 h-10 text-[#333] mx-auto mb-3" />
-                  <p className="text-[#666] text-sm mb-4">Нажмите «AI Анализ» для оценки лида</p>
+                  <p className="text-[#666] text-sm mb-4">{t('modal.analyzeHint')}</p>
                   <button onClick={handleAnalyze} disabled={isAnalyzing} className="px-4 py-2 bg-[#c8ff00] text-black rounded-lg text-sm font-bold hover:bg-[#b8ef00] transition-all disabled:opacity-50">
-                    {isAnalyzing ? 'Анализирую...' : 'Запустить анализ'}
+                    {isAnalyzing ? t('ai.analyzing') : t('modal.runAnalysis')}
                   </button>
                 </div>
               ) : (
                 <>
                   <div className="bg-[#141414] border border-[#242424] rounded-xl p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm text-[#888] font-medium">AI Оценка</span>
+                      <span className="text-sm text-[#888] font-medium">{t('modal.aiScore')}</span>
                       <span className={`text-sm font-bold ${potentialColors[aiResult.potential]}`}>
-                        {potentialLabels[aiResult.potential]}
+                        {t(`potential.${aiResult.potential}`)}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
@@ -264,9 +251,9 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
                     </div>
                   )}
                   <div className="grid grid-cols-1 gap-3">
-                    {aiResult.strengths.length > 0 && <AISection icon={<CheckCircle className="w-4 h-4 text-emerald-400" />} title="Сильные стороны" items={aiResult.strengths} color="text-emerald-400" />}
-                    {aiResult.risks.length > 0 && <AISection icon={<AlertTriangle className="w-4 h-4 text-amber-400" />} title="Риски" items={aiResult.risks} color="text-amber-400" />}
-                    {aiResult.nextSteps.length > 0 && <AISection icon={<ArrowRight className="w-4 h-4 text-blue-400" />} title="Следующие шаги" items={aiResult.nextSteps} color="text-blue-400" />}
+                    {aiResult.strengths.length > 0 && <AISection icon={<CheckCircle className="w-4 h-4 text-emerald-400" />} title={t('ai.strengths')} items={aiResult.strengths} color="text-emerald-400" />}
+                    {aiResult.risks.length > 0 && <AISection icon={<AlertTriangle className="w-4 h-4 text-amber-400" />} title={t('ai.risks')} items={aiResult.risks} color="text-amber-400" />}
+                    {aiResult.nextSteps.length > 0 && <AISection icon={<ArrowRight className="w-4 h-4 text-blue-400" />} title={t('ai.nextSteps')} items={aiResult.nextSteps} color="text-blue-400" />}
                   </div>
                 </>
               )}
@@ -278,16 +265,16 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
               {!summary ? (
                 <div className="text-center py-10">
                   <FileText className="w-10 h-10 text-[#333] mx-auto mb-3" />
-                  <p className="text-[#666] text-sm mb-4">Нажмите «Резюме» для создания краткой сводки</p>
+                  <p className="text-[#666] text-sm mb-4">{t('modal.summaryHint')}</p>
                   <button onClick={handleSummarize} disabled={isSummarizing} className="px-4 py-2 bg-purple-500 text-white rounded-lg text-sm font-bold hover:bg-purple-400 transition-all disabled:opacity-50">
-                    {isSummarizing ? 'Создаю резюме...' : 'Создать резюме'}
+                    {isSummarizing ? t('modal.creatingSummary') : t('modal.createSummary')}
                   </button>
                 </div>
               ) : (
                 <div className="bg-[#141414] border border-[#242424] rounded-xl p-5">
                   <div className="flex items-center gap-2 mb-4">
                     <FileText className="w-4 h-4 text-purple-400" />
-                    <span className="text-sm font-medium text-purple-400">AI Резюме</span>
+                    <span className="text-sm font-medium text-purple-400">{t('modal.aiSummary')}</span>
                   </div>
                   <p className="text-[#ccc] text-sm leading-relaxed whitespace-pre-wrap">{summary}</p>
                 </div>
