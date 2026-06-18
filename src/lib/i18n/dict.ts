@@ -203,6 +203,7 @@ const ru: Dict = {
   'stat.wonLeads': 'Выиграно',
   'stat.lostLeads': 'Проиграно',
   'stat.uniqueCompanies': 'Уникальных компаний',
+  'stat.leads': 'лидов',
 };
 
 const fr: Dict = {
@@ -386,6 +387,7 @@ const fr: Dict = {
   'stat.wonLeads': 'Gagnés',
   'stat.lostLeads': 'Perdus',
   'stat.uniqueCompanies': 'Entreprises uniques',
+  'stat.leads': 'prospects',
 };
 
 const en: Dict = {
@@ -569,6 +571,7 @@ const en: Dict = {
   'stat.wonLeads': 'Won',
   'stat.lostLeads': 'Lost',
   'stat.uniqueCompanies': 'Unique companies',
+  'stat.leads': 'leads',
 };
 
 export const dict: Record<Lang, Dict> = { ru, fr, en };

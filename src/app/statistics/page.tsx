@@ -10,11 +10,6 @@ import { useT } from '@/lib/i18n/LanguageContext';
 
 type GroupBy = 'company' | 'source' | 'region';
 
-const SOURCE_LABELS: Record<string, string> = {
-  website: 'Сайт', referral: 'Рекомендация', social: 'Соцсети',
-  cold_call: 'Холодный звонок', event: 'Мероприятие', other: 'Другое',
-};
-
 function fmtEur(v: number) {
   if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M €`;
   if (v >= 1_000) return `${(v / 1_000).toFixed(0)}K €`;
@@ -38,7 +33,7 @@ function KpiCard({ label, value, sub, icon: Icon, accent = false }: {
 
 export default function StatisticsPage() {
   const { leads } = useLeadsStore();
-  const { t } = useT();
+  const { t, lang } = useT();
   const [groupBy, setGroupBy] = useState<GroupBy>('company');
   const [runId, setRunId] = useState<'value' | 'count'>('value');
 
@@ -54,9 +49,9 @@ export default function StatisticsPage() {
     const map = new Map<string, { name: string; totalValue: number; count: number }>();
     for (const lead of activeLeads) {
       const key =
-        groupBy === 'company' ? (lead.company || 'Без компании') :
-        groupBy === 'source' ? (SOURCE_LABELS[lead.source] || lead.source) :
-        (lead.region || 'Без региона');
+        groupBy === 'company' ? (lead.company || '—') :
+        groupBy === 'source' ? t(`source.${lead.source}`) :
+        (lead.region || '—');
       const existing = map.get(key) ?? { name: key, totalValue: 0, count: 0 };
       existing.totalValue += lead.value;
       existing.count += 1;
@@ -65,14 +60,14 @@ export default function StatisticsPage() {
     return Array.from(map.values()).sort((a, b) =>
       runId === 'value' ? b.totalValue - a.totalValue : b.count - a.count
     );
-  }, [activeLeads, groupBy, runId]);
+  }, [activeLeads, groupBy, runId, lang]);
 
   const podiumRankings: LeaderboardRanking[] = groupedData.slice(0, 3).map((item, i) => ({
     userId: item.name,
     rank: (i + 1) as 1 | 2 | 3,
     name: item.name,
-    value: runId === 'value' ? fmtEur(item.totalValue) : `${item.count} лидов`,
-    subtitle: runId === 'value' ? `${item.count} лидов` : fmtEur(item.totalValue),
+    value: runId === 'value' ? fmtEur(item.totalValue) : `${item.count} ${t('stat.leads')}`,
+    subtitle: runId === 'value' ? `${item.count} ${t('stat.leads')}` : fmtEur(item.totalValue),
   }));
 
   const rankings: LeaderboardRankingItem[] = groupedData.map((item, i) => ({
@@ -174,7 +169,7 @@ export default function StatisticsPage() {
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: col.color }} />
-                      <span className="text-xs text-[#888]">{col.title}</span>
+                      <span className="text-xs text-[#888]">{t(`status.${col.id}`)}</span>
                     </div>
                     <div className="text-right">
                       <span className="text-xs font-bold text-white">{col.count}</span>
