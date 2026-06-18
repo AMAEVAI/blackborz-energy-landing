@@ -48,8 +48,8 @@ export default function SettingsPage() {
           <div className="space-y-2 text-sm text-[#666]">
             <div className="flex justify-between"><span>Версия</span><span className="text-[#888]">1.0.0</span></div>
             <div className="flex justify-between"><span>AI модель</span><span className="text-[#888]">Claude Haiku</span></div>
-            <div className="flex justify-between"><span>Компания</span><span className="text-[#888]">BLACKBORZ ENERGY DRINK</span></div>
-            <div className="flex justify-between"><span>Основа</span><span className="text-[#888]">twentyhq/twenty</span></div>
+            <div className="flex justify-between"><span>Компания</span><span className="text-[#888]">AMAEV PRO</span></div>
+            <div className="flex justify-between"><span>Основа</span><span className="text-[#888]">BLACKBORZ CRM</span></div>
           </div>
         </div>
       </div>
