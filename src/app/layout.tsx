@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Sidebar from '@/components/Sidebar';
 import DataProvider from '@/components/DataProvider';
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({ subsets: ['cyrillic', 'latin'] });
 
@@ -44,6 +45,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         ) : (
           <main className="min-h-screen">{children}</main>
         )}
+        <Analytics />
       </body>
     </html>
   );
