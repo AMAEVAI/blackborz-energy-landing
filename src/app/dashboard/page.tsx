@@ -53,7 +53,7 @@ export default function DashboardPage() {
           <span className="text-xs text-[#c8ff00] font-bold uppercase tracking-widest">BLACKBORZ CRM</span>
         </div>
         <h1 className="text-3xl font-black text-white">Дашборд</h1>
-        <p className="text-[#666] text-sm mt-1">Общая картина продаж энергетиков</p>
+        <p className="text-[#666] text-sm mt-1">Общая картина продаж</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
