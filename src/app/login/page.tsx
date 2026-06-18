@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Zap, CheckCircle } from 'lucide-react';
 import { Lang, LANGS, loginText } from '@/lib/i18n/login';
+import NeuralBackground from '@/components/NeuralBackground';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -92,20 +93,16 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen w-full bg-black relative overflow-hidden flex items-center justify-center">
-      {/* Background gradient — lime/black */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#c8ff00]/15 via-[#222a00]/40 to-black" />
+      {/* Neural particle background */}
+      <div className="absolute inset-0">
+        <NeuralBackground color="#c8ff00" trailOpacity={0.12} particleCount={600} speed={0.8} />
+      </div>
 
-      {/* Noise texture */}
-      <div
-        className="absolute inset-0 opacity-[0.03] mix-blend-soft-light"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          backgroundSize: '200px 200px',
-        }}
-      />
+      {/* Dark overlay to keep card readable */}
+      <div className="absolute inset-0 bg-black/40" />
 
       {/* Radial glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120vh] h-[60vh] rounded-b-[50%] bg-[#c8ff00]/10 blur-[80px]" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[120vh] h-[60vh] rounded-b-[50%] bg-[#c8ff00]/8 blur-[100px]" />
       <motion.div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[100vh] h-[60vh] rounded-b-full bg-[#c8ff00]/10 blur-[60px]"
         animate={{ opacity: [0.1, 0.25, 0.1], scale: [0.98, 1.02, 0.98] }}
