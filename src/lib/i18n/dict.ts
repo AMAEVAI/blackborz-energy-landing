@@ -206,6 +206,13 @@ const ru: Dict = {
   'stat.leads': 'лидов',
   'stat.deals': 'сделок',
   'stat.avgDealSub': 'средняя сделка',
+  // reports
+  'reports.subtitle': 'Аналитика и экспорт данных по лидам',
+  'reports.kpi': 'Ключевые показатели',
+  'reports.bySource': 'По источникам',
+  'reports.byPriority': 'По приоритету',
+  'reports.top5': 'Топ-5 лидов',
+  'reports.csvHeader': 'Отчёт CRM — Blackborz Energy',
 };
 
 const fr: Dict = {
@@ -392,6 +399,13 @@ const fr: Dict = {
   'stat.leads': 'prospects',
   'stat.deals': 'affaires',
   'stat.avgDealSub': 'affaire moyenne',
+  // reports
+  'reports.subtitle': 'Analyse et export des données prospects',
+  'reports.kpi': 'Indicateurs clés',
+  'reports.bySource': 'Par source',
+  'reports.byPriority': 'Par priorité',
+  'reports.top5': 'Top 5 prospects',
+  'reports.csvHeader': 'Rapport CRM — Blackborz Energy',
 };
 
 const en: Dict = {
@@ -578,6 +592,13 @@ const en: Dict = {
   'stat.leads': 'leads',
   'stat.deals': 'deals',
   'stat.avgDealSub': 'average deal',
+  // reports
+  'reports.subtitle': 'Analytics and data export for leads',
+  'reports.kpi': 'Key metrics',
+  'reports.bySource': 'By source',
+  'reports.byPriority': 'By priority',
+  'reports.top5': 'Top 5 leads',
+  'reports.csvHeader': 'CRM Report — Blackborz Energy',
 };
 
 export const dict: Record<Lang, Dict> = { ru, fr, en };
