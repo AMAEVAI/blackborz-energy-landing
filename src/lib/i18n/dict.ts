@@ -213,6 +213,19 @@ const ru: Dict = {
   'reports.byPriority': 'По приоритету',
   'reports.top5': 'Топ-5 лидов',
   'reports.csvHeader': 'Отчёт CRM — Blackborz Energy',
+  // activities
+  'activity.subtitle': 'Лента событий по всем лидам',
+  'activity.all': 'Все',
+  'activity.created': 'Создан',
+  'activity.won': 'Выиграно',
+  'activity.lost': 'Проиграно',
+  'activity.ai': 'AI анализ',
+  'activity.leadCreated': 'Новый лид добавлен',
+  'activity.leadWon': 'Сделка выиграна',
+  'activity.leadLost': 'Сделка проиграна',
+  'activity.aiAnalyzed': 'AI анализ завершён',
+  'activity.empty': 'Активностей пока нет',
+  'activity.from': 'из',
 };
 
 const fr: Dict = {
@@ -406,6 +419,19 @@ const fr: Dict = {
   'reports.byPriority': 'Par priorité',
   'reports.top5': 'Top 5 prospects',
   'reports.csvHeader': 'Rapport CRM — Blackborz Energy',
+  // activities
+  'activity.subtitle': 'Fil d\'événements pour tous les prospects',
+  'activity.all': 'Tous',
+  'activity.created': 'Créé',
+  'activity.won': 'Gagné',
+  'activity.lost': 'Perdu',
+  'activity.ai': 'Analyse IA',
+  'activity.leadCreated': 'Nouveau prospect ajouté',
+  'activity.leadWon': 'Affaire gagnée',
+  'activity.leadLost': 'Affaire perdue',
+  'activity.aiAnalyzed': 'Analyse IA terminée',
+  'activity.empty': 'Aucune activité pour le moment',
+  'activity.from': 'de',
 };
 
 const en: Dict = {
@@ -599,6 +625,19 @@ const en: Dict = {
   'reports.byPriority': 'By priority',
   'reports.top5': 'Top 5 leads',
   'reports.csvHeader': 'CRM Report — Blackborz Energy',
+  // activities
+  'activity.subtitle': 'Event feed across all leads',
+  'activity.all': 'All',
+  'activity.created': 'Created',
+  'activity.won': 'Won',
+  'activity.lost': 'Lost',
+  'activity.ai': 'AI analysis',
+  'activity.leadCreated': 'New lead added',
+  'activity.leadWon': 'Deal won',
+  'activity.leadLost': 'Deal lost',
+  'activity.aiAnalyzed': 'AI analysis complete',
+  'activity.empty': 'No activities yet',
+  'activity.from': 'from',
 };
 
 export const dict: Record<Lang, Dict> = { ru, fr, en };
