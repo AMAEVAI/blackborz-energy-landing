@@ -6,6 +6,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-mo
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Zap, CheckCircle } from 'lucide-react';
 import { Lang, LANGS, loginText } from '@/lib/i18n/login';
 import NeuralBackground from '@/components/NeuralBackground';
+import { PixelLogoGrid } from '@/components/ui/pixel-logo-grid';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -92,7 +93,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-black relative overflow-hidden flex items-center justify-center">
+    <div className="min-h-screen w-full bg-black relative overflow-hidden flex flex-col items-center justify-center py-8 gap-8">
       {/* Neural particle background */}
       <div className="absolute inset-0">
         <NeuralBackground color="#c8ff00" trailOpacity={0.12} particleCount={600} speed={0.8} />
@@ -349,6 +350,16 @@ export default function LoginPage() {
             {t.helpLink}
           </a>
         </p>
+      </motion.div>
+
+      {/* Partners / clients section */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
+        className="relative z-10 w-full max-w-2xl px-4"
+      >
+        <PixelLogoGrid />
       </motion.div>
     </div>
   );
