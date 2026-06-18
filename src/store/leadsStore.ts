@@ -3,7 +3,6 @@ import { create } from 'zustand';
 import { Lead, LeadStatus } from '@/lib/types';
 import { mockLeads } from '@/lib/mockData';
 
-// Map DB snake_case row → Lead camelCase
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function rowToLead(row: any): Lead {
   return {
@@ -92,7 +91,6 @@ export const useLeadsStore = create<LeadsState>((set, get) => ({
   },
 
   updateLead: async (id, updates) => {
-    // Optimistic update
     set((s) => ({
       leads: s.leads.map((l) => (l.id === id ? { ...l, ...updates } : l)),
       selectedLead: s.selectedLead?.id === id ? { ...s.selectedLead, ...updates } : s.selectedLead,
