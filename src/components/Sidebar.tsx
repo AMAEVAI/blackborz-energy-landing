@@ -1,14 +1,23 @@
 'use client';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Kanban, Brain, FileText, Settings, Zap, LogOut } from 'lucide-react';
+import {
+  LayoutDashboard, Users, Contact, Building2,
+  Briefcase, CheckSquare, Activity, Brain,
+  FileText, Settings, LogOut, Zap
+} from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 const navItems = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Дашборд' },
-  { href: '/leads', icon: Kanban, label: 'Канбан лидов' },
-  { href: '/ai-analysis', icon: Brain, label: 'AI Анализ' },
-  { href: '/summarizer', icon: FileText, label: 'Саммаризатор' },
+  { href: '/dashboard',   icon: LayoutDashboard, label: 'Дашборд' },
+  { href: '/leads',       icon: Users,            label: 'Лиды' },
+  { href: '/contacts',    icon: Contact,          label: 'Контакты' },
+  { href: '/companies',   icon: Building2,        label: 'Компании' },
+  { href: '/deals',       icon: Briefcase,        label: 'Сделки' },
+  { href: '/tasks',       icon: CheckSquare,      label: 'Задачи' },
+  { href: '/activities',  icon: Activity,         label: 'Активности' },
+  { href: '/ai-analysis', icon: Brain,            label: 'AI Анализ' },
+  { href: '/reports',     icon: FileText,         label: 'Отчёты' },
 ];
 
 export default function Sidebar() {
