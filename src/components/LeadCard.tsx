@@ -1,6 +1,7 @@
 'use client';
 import { Lead } from '@/lib/types';
 import { Brain, Building2, Mail, Phone, Star, TrendingUp } from 'lucide-react';
+import { useT } from '@/lib/i18n/LanguageContext';
 
 interface LeadCardProps {
   lead: Lead;
@@ -9,9 +10,9 @@ interface LeadCardProps {
 }
 
 const priorityConfig = {
-  low: { label: 'Низкий', color: 'text-gray-400', bg: 'bg-gray-500/10' },
-  medium: { label: 'Средний', color: 'text-amber-400', bg: 'bg-amber-500/10' },
-  high: { label: 'Высокий', color: 'text-[#c8ff00]', bg: 'bg-[#c8ff00]/10' },
+  low:    { key: 'priority.low',    color: 'text-gray-400',    bg: 'bg-gray-500/10' },
+  medium: { key: 'priority.medium', color: 'text-amber-400',   bg: 'bg-amber-500/10' },
+  high:   { key: 'priority.high',   color: 'text-[#c8ff00]',   bg: 'bg-[#c8ff00]/10' },
 };
 
 function formatValue(value: number): string {
@@ -21,6 +22,7 @@ function formatValue(value: number): string {
 }
 
 export default function LeadCard({ lead, onClick, isDragging }: LeadCardProps) {
+  const { t } = useT();
   const prio = priorityConfig[lead.priority];
 
   return (
@@ -52,7 +54,7 @@ export default function LeadCard({ lead, onClick, isDragging }: LeadCardProps) {
           <span className="text-sm font-bold text-emerald-400">{formatValue(lead.value)}</span>
         </div>
         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${prio.color} ${prio.bg}`}>
-          {prio.label}
+          {t(prio.key)}
         </span>
       </div>
 
