@@ -56,6 +56,127 @@ CREATE INDEX IF NOT EXISTS leads_status_idx ON public.leads(status);
 CREATE INDEX IF NOT EXISTS leads_created_at_idx ON public.leads(created_at DESC);
 
 -- =====================================================
+-- Таблица контактов
+-- =====================================================
+CREATE TABLE IF NOT EXISTS public.contacts (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  name       TEXT NOT NULL DEFAULT '',
+  position   TEXT NOT NULL DEFAULT '',
+  company    TEXT NOT NULL DEFAULT '',
+  email      TEXT NOT NULL DEFAULT '',
+  phone      TEXT NOT NULL DEFAULT '',
+  notes      TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TRIGGER contacts_updated_at
+  BEFORE UPDATE ON public.contacts
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+ALTER TABLE public.contacts ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "contacts_own" ON public.contacts
+  FOR ALL TO authenticated
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE INDEX IF NOT EXISTS contacts_user_id_idx ON public.contacts(user_id);
+CREATE INDEX IF NOT EXISTS contacts_created_at_idx ON public.contacts(created_at DESC);
+
+-- =====================================================
+-- Таблица компаний
+-- =====================================================
+CREATE TABLE IF NOT EXISTS public.companies (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  name       TEXT NOT NULL DEFAULT '',
+  industry   TEXT NOT NULL DEFAULT '',
+  website    TEXT NOT NULL DEFAULT '',
+  region     TEXT NOT NULL DEFAULT '',
+  notes      TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TRIGGER companies_updated_at
+  BEFORE UPDATE ON public.companies
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+ALTER TABLE public.companies ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "companies_own" ON public.companies
+  FOR ALL TO authenticated
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE INDEX IF NOT EXISTS companies_user_id_idx ON public.companies(user_id);
+CREATE INDEX IF NOT EXISTS companies_created_at_idx ON public.companies(created_at DESC);
+
+-- =====================================================
+-- Таблица сделок
+-- =====================================================
+CREATE TABLE IF NOT EXISTS public.deals (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  title      TEXT NOT NULL DEFAULT '',
+  value      NUMERIC NOT NULL DEFAULT 0,
+  stage      TEXT NOT NULL DEFAULT 'lead'
+               CHECK (stage IN ('lead','proposal','negotiation','won','lost')),
+  company    TEXT NOT NULL DEFAULT '',
+  contact    TEXT NOT NULL DEFAULT '',
+  notes      TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TRIGGER deals_updated_at
+  BEFORE UPDATE ON public.deals
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+ALTER TABLE public.deals ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "deals_own" ON public.deals
+  FOR ALL TO authenticated
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE INDEX IF NOT EXISTS deals_user_id_idx ON public.deals(user_id);
+CREATE INDEX IF NOT EXISTS deals_created_at_idx ON public.deals(created_at DESC);
+
+-- =====================================================
+-- Таблица задач
+-- =====================================================
+CREATE TABLE IF NOT EXISTS public.tasks (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  title      TEXT NOT NULL DEFAULT '',
+  due_date   DATE,
+  status     TEXT NOT NULL DEFAULT 'todo'
+               CHECK (status IN ('todo','in_progress','done')),
+  priority   TEXT NOT NULL DEFAULT 'medium'
+               CHECK (priority IN ('low','medium','high')),
+  notes      TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TRIGGER tasks_updated_at
+  BEFORE UPDATE ON public.tasks
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "tasks_own" ON public.tasks
+  FOR ALL TO authenticated
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE INDEX IF NOT EXISTS tasks_user_id_idx ON public.tasks(user_id);
+CREATE INDEX IF NOT EXISTS tasks_created_at_idx ON public.tasks(created_at DESC);
+
+-- =====================================================
 -- Тестовые данные (можно удалить в продакшене)
 -- =====================================================
 INSERT INTO public.leads (name, company, email, phone, status, source, priority, value, notes, tags, region) VALUES
