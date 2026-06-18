@@ -40,7 +40,7 @@ export default function Sidebar() {
           </div>
           <div>
             <div className="text-white font-bold text-sm leading-tight">BLACKBORZ</div>
-            <div className="text-[#c8ff00] text-xs font-medium">ENERGY CRM</div>
+            <div className="text-[#c8ff00] text-xs font-medium">CRM</div>
           </div>
         </div>
       </div>

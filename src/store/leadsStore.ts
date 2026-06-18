@@ -3,6 +3,11 @@ import { create } from 'zustand';
 import { Lead, LeadStatus } from '@/lib/types';
 import { mockLeads } from '@/lib/mockData';
 
+const SUPABASE_CONFIGURED =
+  typeof window !== 'undefined' &&
+  !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+  !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function rowToLead(row: any): Lead {
   return {
@@ -80,6 +85,17 @@ export const useLeadsStore = create<LeadsState>((set, get) => ({
   },
 
   addLead: async (lead) => {
+    if (!SUPABASE_CONFIGURED) {
+      const now = new Date().toISOString();
+      const newLead: Lead = {
+        ...lead,
+        id: crypto.randomUUID(),
+        createdAt: now,
+        updatedAt: now,
+      };
+      set((s) => ({ leads: [newLead, ...s.leads] }));
+      return;
+    }
     const res = await fetch('/api/leads', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -95,6 +111,7 @@ export const useLeadsStore = create<LeadsState>((set, get) => ({
       leads: s.leads.map((l) => (l.id === id ? { ...l, ...updates } : l)),
       selectedLead: s.selectedLead?.id === id ? { ...s.selectedLead, ...updates } : s.selectedLead,
     }));
+    if (!SUPABASE_CONFIGURED) return;
     await fetch(`/api/leads/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -107,6 +124,7 @@ export const useLeadsStore = create<LeadsState>((set, get) => ({
       leads: s.leads.filter((l) => l.id !== id),
       selectedLead: s.selectedLead?.id === id ? null : s.selectedLead,
     }));
+    if (!SUPABASE_CONFIGURED) return;
     await fetch(`/api/leads/${id}`, { method: 'DELETE' });
   },
 
@@ -116,6 +134,7 @@ export const useLeadsStore = create<LeadsState>((set, get) => ({
         l.id === leadId ? { ...l, status: newStatus } : l
       ),
     }));
+    if (!SUPABASE_CONFIGURED) return;
     await fetch(`/api/leads/${leadId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },

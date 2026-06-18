@@ -1,9 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { useLeadsStore } from '@/store/leadsStore';
-import { Lead, LeadStatus, LeadSource, LeadPriority } from '@/lib/types';
+import { LeadStatus, LeadSource, LeadPriority } from '@/lib/types';
 import { X } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
 
 interface AddLeadModalProps {
   onClose: () => void;
@@ -27,9 +26,7 @@ export default function AddLeadModal({ onClose }: AddLeadModalProps) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const now = new Date().toISOString();
-    const lead: Lead = {
-      id: uuidv4(),
+    addLead({
       name: form.name,
       company: form.company,
       email: form.email,
@@ -41,10 +38,7 @@ export default function AddLeadModal({ onClose }: AddLeadModalProps) {
       notes: form.notes,
       region: form.region,
       tags: form.tags ? form.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
-      createdAt: now,
-      updatedAt: now,
-    };
-    addLead(lead);
+    });
     onClose();
   }
 
