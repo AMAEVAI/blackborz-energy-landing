@@ -13,14 +13,23 @@ export default function EntityPage({ type, config, icon: Icon }: { type: string;
   const { t } = useT();
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
+    setLoadError(null);
     try {
       const res = await fetch(`/api/entities/${type}`);
-      if (res.ok) setRows(await res.json());
+      if (res.ok) {
+        setRows(await res.json());
+      } else {
+        const d = await res.json().catch(() => ({}));
+        setLoadError(d.error || 'Таблица не найдена в Supabase. Запустите SQL из инструкции.');
+      }
+    } catch {
+      setLoadError('Ошибка подключения к базе данных.');
     } finally {
       setLoading(false);
     }
@@ -74,6 +83,13 @@ export default function EntityPage({ type, config, icon: Icon }: { type: string;
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555]" />
         <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t('common.search')} className="w-full md:max-w-xs pl-9 pr-3 py-2 bg-[#141414] border border-[#242424] rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#c8ff00]/40 transition-colors" />
       </div>
+
+      {loadError && (
+        <div className="mb-4 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl text-sm text-red-400 flex items-start gap-2">
+          <span className="mt-0.5 flex-shrink-0">⚠</span>
+          <span>{loadError}</span>
+        </div>
+      )}
 
       <div className="bg-[#141414] border border-[#242424] rounded-2xl overflow-hidden">
         {loading ? (
@@ -153,6 +169,7 @@ function EntityModal({ type, config, onClose, onCreated }: { type: string; confi
   const { t } = useT();
   const [form, setForm] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   function set(key: string, val: string) {
     setForm((f) => ({ ...f, [key]: val }));
@@ -161,30 +178,46 @@ function EntityModal({ type, config, onClose, onCreated }: { type: string; confi
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
-    // оптимистично — но дождёмся id из базы
-    const res = await fetch(`/api/entities/${type}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-    setSaving(false);
-    if (res.ok) onCreated(await res.json());
+    setError(null);
+    try {
+      const res = await fetch(`/api/entities/${type}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Ошибка сохранения. Проверьте настройки Supabase.');
+        return;
+      }
+      onCreated(data);
+    } catch {
+      setError('Ошибка сети. Проверьте подключение.');
+    } finally {
+      setSaving(false);
+    }
   }
 
   const inputClass = 'w-full px-3 py-2 bg-[#141414] border border-[#242424] rounded-xl text-sm text-white placeholder:text-[#555] focus:outline-none focus:border-[#c8ff00]/40 transition-colors';
   const labelClass = 'text-xs text-[#666] font-medium uppercase tracking-wide mb-1 block';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center md:p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-      <div className="relative bg-[#0d0d0d] border border-[#242424] rounded-2xl w-full max-w-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
+      <div className="relative bg-[#0d0d0d] border border-[#242424] rounded-t-2xl md:rounded-2xl w-full md:max-w-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#1e1e1e]">
           <h2 className="text-base font-bold text-white">{t(config.addKey)}</h2>
           <button onClick={onClose} className="p-1.5 rounded-lg text-[#555] hover:text-white hover:bg-white/10 transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="p-5 space-y-4 max-h-[70vh] overflow-y-auto">
+        {error && (
+          <div className="mx-5 mt-4 px-3 py-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-xs text-red-400 flex items-start gap-2">
+            <span className="mt-0.5">⚠</span>
+            <span>{error}</span>
+          </div>
+        )}
+        <form onSubmit={handleSubmit} className="p-5 space-y-4 max-h-[65vh] overflow-y-auto">
           {config.fields.map((f) => (
             <div key={f.key}>
               <label className={labelClass}>{t(f.labelKey)}{f.required && ' *'}</label>
