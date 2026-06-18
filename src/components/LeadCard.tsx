@@ -30,7 +30,6 @@ export default function LeadCard({ lead, onClick, isDragging }: LeadCardProps) {
         hover:border-[#c8ff00]/30 hover:bg-[#161616] transition-all select-none
         ${isDragging ? 'shadow-2xl shadow-[#c8ff00]/10 border-[#c8ff00]/40 rotate-1' : ''}`}
     >
-      {/* Header */}
       <div className="flex items-start justify-between mb-2">
         <div className="flex-1 min-w-0">
           <div className="font-semibold text-white text-sm truncate">{lead.name}</div>
@@ -47,7 +46,6 @@ export default function LeadCard({ lead, onClick, isDragging }: LeadCardProps) {
         )}
       </div>
 
-      {/* Value */}
       <div className="flex items-center justify-between mb-2.5">
         <div className="flex items-center gap-1">
           <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
@@ -58,7 +56,6 @@ export default function LeadCard({ lead, onClick, isDragging }: LeadCardProps) {
         </span>
       </div>
 
-      {/* Tags */}
       {lead.tags.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-2">
           {lead.tags.slice(0, 3).map((tag) => (
@@ -69,7 +66,6 @@ export default function LeadCard({ lead, onClick, isDragging }: LeadCardProps) {
         </div>
       )}
 
-      {/* Contact */}
       <div className="space-y-1 pt-2 border-t border-[#1e1e1e]">
         <div className="flex items-center gap-1.5 text-xs text-[#555]">
           <Mail className="w-3 h-3" />
@@ -81,7 +77,6 @@ export default function LeadCard({ lead, onClick, isDragging }: LeadCardProps) {
         </div>
       </div>
 
-      {/* AI Badge */}
       {lead.aiAnalysis && (
         <div className="mt-2 pt-2 border-t border-[#1e1e1e]">
           <div className="flex items-start gap-1.5">

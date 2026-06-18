@@ -32,7 +32,6 @@ export default function KanbanBoard() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Toolbar */}
       <div className="flex items-center gap-3 mb-5">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#555]" />
@@ -53,7 +52,6 @@ export default function KanbanBoard() {
         </button>
       </div>
 
-      {/* Board */}
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex gap-4 overflow-x-auto pb-4 flex-1">
           {KANBAN_COLUMNS.map((col) => {
@@ -61,11 +59,7 @@ export default function KanbanBoard() {
             const totalValue = leads.reduce((s, l) => s + l.value, 0);
 
             return (
-              <div
-                key={col.id}
-                className="flex-shrink-0 w-72 flex flex-col"
-              >
-                {/* Column header */}
+              <div key={col.id} className="flex-shrink-0 w-72 flex flex-col">
                 <div className={`flex items-center justify-between px-3 py-2.5 rounded-xl mb-2 ${col.bgColor} border ${col.borderColor}`}>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: col.color }} />
@@ -83,7 +77,6 @@ export default function KanbanBoard() {
                   )}
                 </div>
 
-                {/* Droppable area */}
                 <Droppable droppableId={col.id}>
                   {(provided, snapshot) => (
                     <div
@@ -128,7 +121,6 @@ export default function KanbanBoard() {
         </div>
       </DragDropContext>
 
-      {/* Modals */}
       {selectedLead && (
         <LeadModal lead={selectedLead} onClose={() => setSelectedLead(null)} />
       )}

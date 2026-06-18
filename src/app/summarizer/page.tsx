@@ -59,7 +59,6 @@ export default function SummarizerPage() {
 
   return (
     <div className="p-8">
-      {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">
           <FileText className="w-5 h-5 text-[#c8ff00]" />
@@ -69,27 +68,12 @@ export default function SummarizerPage() {
         <p className="text-[#666] text-sm mt-1">Генерируйте краткие сводки для пайплайна и отдельных лидов</p>
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-1 bg-[#141414] border border-[#242424] rounded-xl p-1 mb-6 w-fit">
-        <button
-          onClick={() => setActiveTab('pipeline')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-            activeTab === 'pipeline'
-              ? 'bg-[#c8ff00] text-black'
-              : 'text-[#666] hover:text-white'
-          }`}
-        >
+        <button onClick={() => setActiveTab('pipeline')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'pipeline' ? 'bg-[#c8ff00] text-black' : 'text-[#666] hover:text-white'}`}>
           <Zap className="w-4 h-4" />
           Пайплайн
         </button>
-        <button
-          onClick={() => setActiveTab('leads')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-            activeTab === 'leads'
-              ? 'bg-[#c8ff00] text-black'
-              : 'text-[#666] hover:text-white'
-          }`}
-        >
+        <button onClick={() => setActiveTab('leads')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'leads' ? 'bg-[#c8ff00] text-black' : 'text-[#666] hover:text-white'}`}>
           <Users className="w-4 h-4" />
           По лидам
         </button>
@@ -102,25 +86,13 @@ export default function SummarizerPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h2 className="text-base font-bold text-white">Отчёт по пайплайну</h2>
-                  <p className="text-sm text-[#666] mt-1">
-                    Анализ {leads.filter((l) => l.status !== 'lost').length} активных лидов
-                  </p>
+                  <p className="text-sm text-[#666] mt-1">Анализ {leads.filter((l) => l.status !== 'lost').length} активных лидов</p>
                 </div>
-                <button
-                  onClick={generatePipelineSummary}
-                  disabled={loadingPipeline}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#c8ff00] hover:bg-[#b8ef00] text-black rounded-xl text-sm font-bold transition-all disabled:opacity-50"
-                >
-                  {loadingPipeline ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <FileText className="w-4 h-4" />
-                  )}
+                <button onClick={generatePipelineSummary} disabled={loadingPipeline} className="flex items-center gap-2 px-4 py-2 bg-[#c8ff00] hover:bg-[#b8ef00] text-black rounded-xl text-sm font-bold transition-all disabled:opacity-50">
+                  {loadingPipeline ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
                   {loadingPipeline ? 'Генерирую...' : 'Сгенерировать'}
                 </button>
               </div>
-
-              {/* Stage summary preview */}
               <div className="grid grid-cols-3 gap-2">
                 {KANBAN_COLUMNS.slice(0, 6).map((col) => {
                   const count = leads.filter((l) => l.status === col.id).length;
@@ -132,15 +104,12 @@ export default function SummarizerPage() {
                         <span className="text-xs text-[#666]">{col.title}</span>
                       </div>
                       <div className="text-sm font-bold text-white">{count}</div>
-                      <div className="text-xs text-[#555]">
-                        {val >= 1_000_000 ? `${(val / 1_000_000).toFixed(1)}M` : `${(val / 1_000).toFixed(0)}K`} ₽
-                      </div>
+                      <div className="text-xs text-[#555]">{val >= 1_000_000 ? `${(val / 1_000_000).toFixed(1)}M` : `${(val / 1_000).toFixed(0)}K`} ₽</div>
                     </div>
                   );
                 })}
               </div>
             </div>
-
             {pipelineSummary ? (
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
@@ -148,10 +117,7 @@ export default function SummarizerPage() {
                     <FileText className="w-4 h-4 text-purple-400" />
                     <span className="text-sm font-medium text-purple-400">AI Резюме</span>
                   </div>
-                  <button
-                    onClick={() => copyText(pipelineSummary)}
-                    className="flex items-center gap-1.5 px-2.5 py-1 bg-[#1a1a1a] border border-[#2a2a2a] text-[#888] hover:text-white rounded-lg text-xs transition-all"
-                  >
+                  <button onClick={() => copyText(pipelineSummary)} className="flex items-center gap-1.5 px-2.5 py-1 bg-[#1a1a1a] border border-[#2a2a2a] text-[#888] hover:text-white rounded-lg text-xs transition-all">
                     {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                     {copied ? 'Скопировано!' : 'Копировать'}
                   </button>
@@ -176,7 +142,6 @@ export default function SummarizerPage() {
             const summary = singleSummaries[lead.id];
             const isLoading = loadingLead === lead.id;
             const col = KANBAN_COLUMNS.find((c) => c.id === lead.status);
-
             return (
               <div key={lead.id} className="bg-[#141414] border border-[#242424] rounded-xl overflow-hidden">
                 <div className="flex items-center justify-between p-4">
@@ -187,16 +152,11 @@ export default function SummarizerPage() {
                       <div className="text-xs text-[#666]">{lead.company} · {col?.title}</div>
                     </div>
                   </div>
-                  <button
-                    onClick={() => generateLeadSummary(lead)}
-                    disabled={isLoading}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 rounded-lg text-xs font-medium transition-all disabled:opacity-50"
-                  >
+                  <button onClick={() => generateLeadSummary(lead)} disabled={isLoading} className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 rounded-lg text-xs font-medium transition-all disabled:opacity-50">
                     {isLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <FileText className="w-3 h-3" />}
                     {isLoading ? 'Генерирую...' : 'Резюме'}
                   </button>
                 </div>
-
                 {summary && (
                   <div className="px-4 pb-4 pt-0">
                     <div className="bg-[#0d0d0d] rounded-xl p-4 border border-[#1e1e1e]">

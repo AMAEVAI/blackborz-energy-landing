@@ -109,7 +109,6 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
         className="relative bg-[#0d0d0d] border border-[#242424] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="flex items-start justify-between p-5 border-b border-[#1e1e1e]">
           <div>
             <h2 className="text-lg font-bold text-white">{lead.name}</h2>
@@ -126,22 +125,15 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={handleDelete}
-              className="p-2 rounded-lg text-[#555] hover:text-red-400 hover:bg-red-400/10 transition-all"
-            >
+            <button onClick={handleDelete} className="p-2 rounded-lg text-[#555] hover:text-red-400 hover:bg-red-400/10 transition-all">
               <Trash2 className="w-4 h-4" />
             </button>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg text-[#555] hover:text-white hover:bg-white/10 transition-all"
-            >
+            <button onClick={onClose} className="p-2 rounded-lg text-[#555] hover:text-white hover:bg-white/10 transition-all">
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Quick actions */}
         <div className="flex items-center gap-2 px-5 py-3 border-b border-[#1e1e1e] bg-[#0a0a0a]">
           <button
             onClick={handleAnalyze}
@@ -160,7 +152,6 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
             Резюме
           </button>
 
-          {/* Move status */}
           <div className="relative ml-auto">
             <button
               onClick={() => setShowStatusMenu(!showStatusMenu)}
@@ -190,7 +181,6 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="flex border-b border-[#1e1e1e]">
           {(['info', 'ai', 'summary'] as const).map((tab) => (
             <button
@@ -209,7 +199,6 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
           ))}
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto p-5">
           {activeTab === 'info' && (
             <div className="space-y-4">
@@ -217,21 +206,14 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
                 <InfoBlock label="Email" icon={<Mail className="w-3.5 h-3.5" />} value={lead.email} />
                 <InfoBlock label="Телефон" icon={<Phone className="w-3.5 h-3.5" />} value={lead.phone} />
                 <InfoBlock label="Источник" icon={<TrendingUp className="w-3.5 h-3.5" />} value={sourceLabels[lead.source] || lead.source} />
-                <InfoBlock
-                  label="Ценность"
-                  icon={<TrendingUp className="w-3.5 h-3.5" />}
-                  value={lead.value.toLocaleString('ru-RU') + ' ₽'}
-                  highlight
-                />
+                <InfoBlock label="Ценность" icon={<TrendingUp className="w-3.5 h-3.5" />} value={lead.value.toLocaleString('ru-RU') + ' ₽'} highlight />
               </div>
-
               {lead.notes && (
                 <div className="bg-[#141414] border border-[#242424] rounded-xl p-4">
                   <div className="text-xs text-[#666] mb-2 font-medium uppercase tracking-wide">Заметки</div>
                   <p className="text-[#ccc] text-sm leading-relaxed">{lead.notes}</p>
                 </div>
               )}
-
               {lead.tags.length > 0 && (
                 <div>
                   <div className="flex items-center gap-2 mb-2">
@@ -256,17 +238,12 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
                 <div className="text-center py-10">
                   <Brain className="w-10 h-10 text-[#333] mx-auto mb-3" />
                   <p className="text-[#666] text-sm mb-4">Нажмите «AI Анализ» для оценки лида</p>
-                  <button
-                    onClick={handleAnalyze}
-                    disabled={isAnalyzing}
-                    className="px-4 py-2 bg-[#c8ff00] text-black rounded-lg text-sm font-bold hover:bg-[#b8ef00] transition-all disabled:opacity-50"
-                  >
+                  <button onClick={handleAnalyze} disabled={isAnalyzing} className="px-4 py-2 bg-[#c8ff00] text-black rounded-lg text-sm font-bold hover:bg-[#b8ef00] transition-all disabled:opacity-50">
                     {isAnalyzing ? 'Анализирую...' : 'Запустить анализ'}
                   </button>
                 </div>
               ) : (
                 <>
-                  {/* Score */}
                   <div className="bg-[#141414] border border-[#242424] rounded-xl p-4">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-sm text-[#888] font-medium">AI Оценка</span>
@@ -276,31 +253,20 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="flex-1 h-2.5 bg-[#1a1a1a] rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-[#c8ff00] to-emerald-400 transition-all duration-700"
-                          style={{ width: `${aiResult.score}%` }}
-                        />
+                        <div className="h-full rounded-full bg-gradient-to-r from-[#c8ff00] to-emerald-400 transition-all duration-700" style={{ width: `${aiResult.score}%` }} />
                       </div>
                       <span className="text-2xl font-black text-white w-10 text-right">{aiResult.score}</span>
                     </div>
                   </div>
-
                   {aiResult.summary && (
                     <div className="bg-[#c8ff00]/5 border border-[#c8ff00]/20 rounded-xl p-4">
                       <p className="text-[#ccc] text-sm leading-relaxed">{aiResult.summary}</p>
                     </div>
                   )}
-
                   <div className="grid grid-cols-1 gap-3">
-                    {aiResult.strengths.length > 0 && (
-                      <AISection icon={<CheckCircle className="w-4 h-4 text-emerald-400" />} title="Сильные стороны" items={aiResult.strengths} color="text-emerald-400" />
-                    )}
-                    {aiResult.risks.length > 0 && (
-                      <AISection icon={<AlertTriangle className="w-4 h-4 text-amber-400" />} title="Риски" items={aiResult.risks} color="text-amber-400" />
-                    )}
-                    {aiResult.nextSteps.length > 0 && (
-                      <AISection icon={<ArrowRight className="w-4 h-4 text-blue-400" />} title="Следующие шаги" items={aiResult.nextSteps} color="text-blue-400" />
-                    )}
+                    {aiResult.strengths.length > 0 && <AISection icon={<CheckCircle className="w-4 h-4 text-emerald-400" />} title="Сильные стороны" items={aiResult.strengths} color="text-emerald-400" />}
+                    {aiResult.risks.length > 0 && <AISection icon={<AlertTriangle className="w-4 h-4 text-amber-400" />} title="Риски" items={aiResult.risks} color="text-amber-400" />}
+                    {aiResult.nextSteps.length > 0 && <AISection icon={<ArrowRight className="w-4 h-4 text-blue-400" />} title="Следующие шаги" items={aiResult.nextSteps} color="text-blue-400" />}
                   </div>
                 </>
               )}
@@ -313,11 +279,7 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
                 <div className="text-center py-10">
                   <FileText className="w-10 h-10 text-[#333] mx-auto mb-3" />
                   <p className="text-[#666] text-sm mb-4">Нажмите «Резюме» для создания краткой сводки</p>
-                  <button
-                    onClick={handleSummarize}
-                    disabled={isSummarizing}
-                    className="px-4 py-2 bg-purple-500 text-white rounded-lg text-sm font-bold hover:bg-purple-400 transition-all disabled:opacity-50"
-                  >
+                  <button onClick={handleSummarize} disabled={isSummarizing} className="px-4 py-2 bg-purple-500 text-white rounded-lg text-sm font-bold hover:bg-purple-400 transition-all disabled:opacity-50">
                     {isSummarizing ? 'Создаю резюме...' : 'Создать резюме'}
                   </button>
                 </div>

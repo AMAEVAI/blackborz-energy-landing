@@ -3,7 +3,11 @@ import { create } from 'zustand';
 import { Lead, LeadStatus } from '@/lib/types';
 import { mockLeads } from '@/lib/mockData';
 
-// Map DB snake_case row → Lead camelCase
+const SUPABASE_CONFIGURED =
+  typeof window !== 'undefined' &&
+  !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+  !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function rowToLead(row: any): Lead {
   return {
@@ -81,22 +85,33 @@ export const useLeadsStore = create<LeadsState>((set, get) => ({
   },
 
   addLead: async (lead) => {
-    const res = await fetch('/api/leads', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(lead),
-    });
-    if (!res.ok) return;
-    const row = await res.json();
-    set((s) => ({ leads: [rowToLead(row), ...s.leads] }));
+    const now = new Date().toISOString();
+    const tempId = crypto.randomUUID();
+    const newLead: Lead = { ...lead, id: tempId, createdAt: now, updatedAt: now };
+    set((s) => ({ leads: [newLead, ...s.leads] }));
+    if (!SUPABASE_CONFIGURED) return;
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(lead),
+      });
+      if (res.ok) {
+        const row = await res.json();
+        const saved = rowToLead(row);
+        set((s) => ({ leads: s.leads.map((l) => (l.id === tempId ? saved : l)) }));
+      }
+    } catch {
+      // keep the optimistic entry in session
+    }
   },
 
   updateLead: async (id, updates) => {
-    // Optimistic update
     set((s) => ({
       leads: s.leads.map((l) => (l.id === id ? { ...l, ...updates } : l)),
       selectedLead: s.selectedLead?.id === id ? { ...s.selectedLead, ...updates } : s.selectedLead,
     }));
+    if (!SUPABASE_CONFIGURED) return;
     await fetch(`/api/leads/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -109,6 +124,7 @@ export const useLeadsStore = create<LeadsState>((set, get) => ({
       leads: s.leads.filter((l) => l.id !== id),
       selectedLead: s.selectedLead?.id === id ? null : s.selectedLead,
     }));
+    if (!SUPABASE_CONFIGURED) return;
     await fetch(`/api/leads/${id}`, { method: 'DELETE' });
   },
 
@@ -118,6 +134,7 @@ export const useLeadsStore = create<LeadsState>((set, get) => ({
         l.id === leadId ? { ...l, status: newStatus } : l
       ),
     }));
+    if (!SUPABASE_CONFIGURED) return;
     await fetch(`/api/leads/${leadId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
