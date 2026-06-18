@@ -4,11 +4,13 @@ import { useLeadsStore } from '@/store/leadsStore';
 import { FileText, Loader2, Copy, Check, Zap, Users, Clock } from 'lucide-react';
 import { Lead } from '@/lib/types';
 import { KANBAN_COLUMNS } from '@/lib/mockData';
+import { useT } from '@/lib/i18n/LanguageContext';
 
 const AI_AVAILABLE = false;
 
 export default function SummarizerPage() {
   const { leads } = useLeadsStore();
+  const { t } = useT();
   const [pipelineSummary, setPipelineSummary] = useState('');
   const [singleSummaries, setSingleSummaries] = useState<Record<string, string>>({});
   const [loadingPipeline, setLoadingPipeline] = useState(false);
@@ -69,11 +71,11 @@ export default function SummarizerPage() {
           <FileText className="w-5 h-5 text-[#c8ff00]" />
           <span className="text-xs text-[#c8ff00] font-bold uppercase tracking-widest">AI</span>
         </div>
-        <h1 className="text-2xl md:text-3xl font-black text-white mb-3">Саммаризатор</h1>
+        <h1 className="text-2xl md:text-3xl font-black text-white mb-3">{t('sum.title')}</h1>
         <div className="px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-full mb-4">
-          <span className="text-amber-400 text-sm font-semibold">⏳ Временно недоступен</span>
+          <span className="text-amber-400 text-sm font-semibold">⏳ {t('ai.unavailable')}</span>
         </div>
-        <p className="text-[#555] text-sm max-w-xs">Функция саммаризации будет доступна в ближайшее время</p>
+        <p className="text-[#555] text-sm max-w-xs">{t('ai.unavailableSub')}</p>
       </div>
     );
   }
@@ -85,18 +87,18 @@ export default function SummarizerPage() {
           <FileText className="w-5 h-5 text-[#c8ff00]" />
           <span className="text-xs text-[#c8ff00] font-bold uppercase tracking-widest">AI</span>
         </div>
-        <h1 className="text-3xl font-black text-white">Саммаризатор</h1>
-        <p className="text-[#666] text-sm mt-1">Генерируйте краткие сводки для пайплайна и отдельных лидов</p>
+        <h1 className="text-3xl font-black text-white">{t('sum.title')}</h1>
+        <p className="text-[#666] text-sm mt-1">{t('sum.subtitle')}</p>
       </div>
 
       <div className="flex gap-1 bg-[#141414] border border-[#242424] rounded-xl p-1 mb-6 w-fit">
         <button onClick={() => setActiveTab('pipeline')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'pipeline' ? 'bg-[#c8ff00] text-black' : 'text-[#666] hover:text-white'}`}>
           <Zap className="w-4 h-4" />
-          Пайплайн
+          {t('sum.pipeline')}
         </button>
         <button onClick={() => setActiveTab('leads')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'leads' ? 'bg-[#c8ff00] text-black' : 'text-[#666] hover:text-white'}`}>
           <Users className="w-4 h-4" />
-          По лидам
+          {t('sum.byLeads')}
         </button>
       </div>
 
@@ -106,12 +108,12 @@ export default function SummarizerPage() {
             <div className="p-6 border-b border-[#1e1e1e]">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-base font-bold text-white">Отчёт по пайплайну</h2>
-                  <p className="text-sm text-[#666] mt-1">Анализ {leads.filter((l) => l.status !== 'lost').length} активных лидов</p>
+                  <h2 className="text-base font-bold text-white">{t('sum.pipelineReport')}</h2>
+                  <p className="text-sm text-[#666] mt-1">{leads.filter((l) => l.status !== 'lost').length} {t('sum.activeLeads')}</p>
                 </div>
                 <button onClick={generatePipelineSummary} disabled={loadingPipeline} className="flex items-center gap-2 px-4 py-2 bg-[#c8ff00] hover:bg-[#b8ef00] text-black rounded-xl text-sm font-bold transition-all disabled:opacity-50">
                   {loadingPipeline ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
-                  {loadingPipeline ? 'Генерирую...' : 'Сгенерировать'}
+                  {loadingPipeline ? t('sum.generating') : t('sum.generate')}
                 </button>
               </div>
               <div className="grid grid-cols-3 gap-2">
@@ -136,11 +138,11 @@ export default function SummarizerPage() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <FileText className="w-4 h-4 text-purple-400" />
-                    <span className="text-sm font-medium text-purple-400">AI Резюме</span>
+                    <span className="text-sm font-medium text-purple-400">{t('sum.aiSummary')}</span>
                   </div>
                   <button onClick={() => copyText(pipelineSummary)} className="flex items-center gap-1.5 px-2.5 py-1 bg-[#1a1a1a] border border-[#2a2a2a] text-[#888] hover:text-white rounded-lg text-xs transition-all">
                     {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                    {copied ? 'Скопировано!' : 'Копировать'}
+                    {copied ? t('sum.copied') : t('sum.copy')}
                   </button>
                 </div>
                 <div className="bg-[#0d0d0d] rounded-xl p-4 border border-[#1e1e1e]">
@@ -150,7 +152,7 @@ export default function SummarizerPage() {
             ) : (
               <div className="p-8 text-center">
                 <FileText className="w-10 h-10 text-[#2a2a2a] mx-auto mb-3" />
-                <p className="text-[#555] text-sm">Нажмите «Сгенерировать» для создания отчёта по пайплайну</p>
+                <p className="text-[#555] text-sm">{t('sum.clickGenerate')}</p>
               </div>
             )}
           </div>
@@ -175,7 +177,7 @@ export default function SummarizerPage() {
                   </div>
                   <button onClick={() => generateLeadSummary(lead)} disabled={isLoading} className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 rounded-lg text-xs font-medium transition-all disabled:opacity-50">
                     {isLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <FileText className="w-3 h-3" />}
-                    {isLoading ? 'Генерирую...' : 'Резюме'}
+                    {isLoading ? t('sum.generating') : t('sum.leadSummary')}
                   </button>
                 </div>
                 {summary && (

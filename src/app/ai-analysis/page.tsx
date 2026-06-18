@@ -69,9 +69,9 @@ export default function AIAnalysisPage() {
         </div>
         <h1 className="text-2xl md:text-3xl font-black text-white mb-3">{t('ai.title')}</h1>
         <div className="px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-full mb-4">
-          <span className="text-amber-400 text-sm font-semibold">⏳ Временно недоступен</span>
+          <span className="text-amber-400 text-sm font-semibold">⏳ {t('ai.unavailable')}</span>
         </div>
-        <p className="text-[#555] text-sm max-w-xs">Функция AI анализа будет доступна в ближайшее время</p>
+        <p className="text-[#555] text-sm max-w-xs">{t('ai.unavailableSub')}</p>
       </div>
     );
   }
