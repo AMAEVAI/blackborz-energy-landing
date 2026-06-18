@@ -1,6 +1,7 @@
 'use client';
 import { create } from 'zustand';
 import { Lead, LeadStatus } from '@/lib/types';
+import { mockLeads } from '@/lib/mockData';
 
 // Map DB snake_case row → Lead camelCase
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,6 +37,7 @@ interface LeadsState {
   searchQuery: string;
 
   fetchLeads: () => Promise<void>;
+  loadMockData: () => void;
   addLead: (lead: Omit<Lead, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateLead: (id: string, updates: Partial<Lead>) => Promise<void>;
   deleteLead: (id: string) => Promise<void>;
@@ -63,6 +65,8 @@ export const useLeadsStore = create<LeadsState>((set, get) => ({
   isSummarizing: false,
   isLoading: false,
   searchQuery: '',
+
+  loadMockData: () => set({ leads: mockLeads }),
 
   fetchLeads: async () => {
     set({ isLoading: true });
