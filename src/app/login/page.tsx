@@ -2,16 +2,18 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
-import { Zap, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Zap, Loader2, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { Lang, LANGS, loginText } from '@/lib/i18n/login';
 
 export default function LoginPage() {
   const router = useRouter();
+  const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [lang, setLang] = useState<Lang>('ru');
 
   useEffect(() => {
@@ -24,12 +26,19 @@ export default function LoginPage() {
     localStorage.setItem('lang', l);
   }
 
+  function switchMode(m: 'login' | 'register') {
+    setMode(m);
+    setError('');
+    setSuccess('');
+  }
+
   const t = loginText[lang];
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
 
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -42,6 +51,39 @@ export default function LoginPage() {
       router.refresh();
     }
   }
+
+  async function handleRegister(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    });
+
+    if (error) {
+      setError(error.message || t.registerError);
+      setLoading(false);
+      return;
+    }
+
+    // Если подтверждение email выключено — сразу есть сессия, входим
+    if (data.session) {
+      router.push('/dashboard');
+      router.refresh();
+      return;
+    }
+
+    // Если подтверждение включено — просим проверить почту
+    setSuccess(t.checkEmail);
+    setLoading(false);
+  }
+
+  const isRegister = mode === 'register';
 
   return (
     <div className="min-h-screen bg-[#080808] flex items-center justify-center p-4">
@@ -75,10 +117,10 @@ export default function LoginPage() {
         </div>
 
         <div className="bg-[#0d0d0d] border border-[#1e1e1e] rounded-2xl p-6">
-          <h1 className="text-base font-bold text-white mb-1">{t.title}</h1>
-          <p className="text-sm text-[#555] mb-6">{t.description}</p>
+          <h1 className="text-base font-bold text-white mb-1">{isRegister ? t.registerTitle : t.title}</h1>
+          <p className="text-sm text-[#555] mb-6">{isRegister ? t.registerDescription : t.description}</p>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={isRegister ? handleRegister : handleLogin} className="space-y-4">
             <div>
               <label className="text-xs text-[#666] font-medium uppercase tracking-wide block mb-1.5">{t.emailLabel}</label>
               <input type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t.emailPlaceholder} className="w-full px-3 py-2.5 bg-[#141414] border border-[#242424] rounded-xl text-sm text-white placeholder:text-[#444] focus:outline-none focus:border-[#c8ff00]/40 transition-colors" />
@@ -87,20 +129,45 @@ export default function LoginPage() {
             <div>
               <label className="text-xs text-[#666] font-medium uppercase tracking-wide block mb-1.5">{t.passwordLabel}</label>
               <div className="relative">
-                <input type={showPassword ? 'text' : 'password'} required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-3 py-2.5 pr-10 bg-[#141414] border border-[#242424] rounded-xl text-sm text-white placeholder:text-[#444] focus:outline-none focus:border-[#c8ff00]/40 transition-colors" />
+                <input type={showPassword ? 'text' : 'password'} required minLength={6} autoComplete={isRegister ? 'new-password' : 'current-password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-3 py-2.5 pr-10 bg-[#141414] border border-[#242424] rounded-xl text-sm text-white placeholder:text-[#444] focus:outline-none focus:border-[#c8ff00]/40 transition-colors" />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#555] hover:text-[#888] transition-colors">
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+              {isRegister && <p className="text-xs text-[#555] mt-1.5">{t.passwordHint}</p>}
             </div>
 
             {error && <div className="px-3 py-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-sm text-red-400">{error}</div>}
+            {success && (
+              <div className="px-3 py-2.5 bg-[#c8ff00]/10 border border-[#c8ff00]/20 rounded-xl text-sm text-[#c8ff00] flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>{success}</span>
+              </div>
+            )}
 
             <button type="submit" disabled={loading} className="w-full py-2.5 bg-[#c8ff00] hover:bg-[#b8ef00] text-black font-bold rounded-xl text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2">
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-              {loading ? t.signingIn : t.signIn}
+              {isRegister ? (loading ? t.registering : t.registerCta) : (loading ? t.signingIn : t.signIn)}
             </button>
           </form>
+
+          <div className="mt-5 pt-5 border-t border-[#1e1e1e] text-center text-sm text-[#666]">
+            {isRegister ? (
+              <>
+                {t.toLogin}{' '}
+                <button onClick={() => switchMode('login')} className="text-[#c8ff00] font-medium hover:underline">
+                  {t.toLoginLink}
+                </button>
+              </>
+            ) : (
+              <>
+                {t.toRegister}{' '}
+                <button onClick={() => switchMode('register')} className="text-[#c8ff00] font-medium hover:underline">
+                  {t.toRegisterLink}
+                </button>
+              </>
+            )}
+          </div>
         </div>
 
         <p className="text-center text-xs text-[#444] mt-4">
