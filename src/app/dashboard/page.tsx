@@ -1,7 +1,7 @@
 'use client';
 import { useLeadsStore } from '@/store/leadsStore';
 import StatsCard from '@/components/StatsCard';
-import { TrendingUp, Users, Trophy, DollarSign, BarChart3, Target, Zap } from 'lucide-react';
+import { TrendingUp, Users, Trophy, DollarSign, BarChart3, Target, Zap, Loader2 } from 'lucide-react';
 import { KANBAN_COLUMNS } from '@/lib/mockData';
 import Link from 'next/link';
 
@@ -12,7 +12,18 @@ function formatMoney(v: number) {
 }
 
 export default function DashboardPage() {
-  const { leads, getStats } = useLeadsStore();
+  const { leads, getStats, isLoading } = useLeadsStore();
+
+  if (isLoading) {
+    return (
+      <div className="p-8 flex items-center justify-center min-h-screen">
+        <div className="flex items-center gap-3 text-[#666]">
+          <Loader2 className="w-5 h-5 animate-spin text-[#c8ff00]" />
+          <span className="text-sm">Загрузка данных...</span>
+        </div>
+      </div>
+    );
+  }
   const stats = getStats();
 
   const pipelineValue = leads
