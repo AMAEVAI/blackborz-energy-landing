@@ -7,9 +7,9 @@ import { useT } from '@/lib/i18n/LanguageContext';
 import Link from 'next/link';
 
 function formatMoney(v: number) {
-  if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M ₽`;
-  if (v >= 1_000) return `${(v / 1_000).toFixed(0)}K ₽`;
-  return `${v} ₽`;
+  if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M €`;
+  if (v >= 1_000) return `${(v / 1_000).toFixed(0)}K €`;
+  return `${v} €`;
 }
 
 export default function DashboardPage() {

@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
       const leadsText = leads
         .map(
           (l: { name: string; company: string; status: string; value: number; notes: string }) =>
-            `- ${l.name} (${l.company}): статус "${l.status}", ценность ${l.value.toLocaleString('ru-RU')} ₽. ${l.notes}`
+            `- ${l.name} (${l.company}): статус "${l.status}", ценность ${l.value.toLocaleString('fr-FR')} €. ${l.notes}`
         )
         .join('\n');
 
@@ -44,7 +44,7 @@ ${leadsText}
 - Имя: ${lead.name}
 - Компания: ${lead.company}
 - Источник: ${lead.source}
-- Ценность: ${lead.value.toLocaleString('ru-RU')} ₽
+- Ценность: ${lead.value.toLocaleString('fr-FR')} €
 - Текущий статус: ${lead.status}
 - Заметки: ${lead.notes}
 - AI оценка: ${lead.aiScore || 'не оценён'}

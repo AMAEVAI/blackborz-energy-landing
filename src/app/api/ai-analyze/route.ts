@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 - Компания: ${lead.company}
 - Email: ${lead.email}
 - Источник: ${lead.source}
-- Потенциальная ценность: ${lead.value.toLocaleString('ru-RU')} ₽
+- Потенциальная ценность: ${lead.value.toLocaleString('fr-FR')} €
 - Статус: ${lead.status}
 - Заметки: ${lead.notes}
 - Теги: ${lead.tags.join(', ')}

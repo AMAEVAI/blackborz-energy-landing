@@ -53,7 +53,7 @@ export default function EntityPage({ type, config, icon: Icon }: { type: string;
       const opt = field.options?.find((o) => o.value === val);
       return opt ? t(opt.labelKey) : String(val);
     }
-    if (field?.type === 'number') return Number(val).toLocaleString('ru-RU');
+    if (field?.type === 'number') return Number(val).toLocaleString('fr-FR');
     return String(val);
   }
 

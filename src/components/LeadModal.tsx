@@ -206,7 +206,7 @@ export default function LeadModal({ lead, onClose }: LeadModalProps) {
                 <InfoBlock label="Email" icon={<Mail className="w-3.5 h-3.5" />} value={lead.email} />
                 <InfoBlock label="Телефон" icon={<Phone className="w-3.5 h-3.5" />} value={lead.phone} />
                 <InfoBlock label="Источник" icon={<TrendingUp className="w-3.5 h-3.5" />} value={sourceLabels[lead.source] || lead.source} />
-                <InfoBlock label="Ценность" icon={<TrendingUp className="w-3.5 h-3.5" />} value={lead.value.toLocaleString('ru-RU') + ' ₽'} highlight />
+                <InfoBlock label="Ценность" icon={<TrendingUp className="w-3.5 h-3.5" />} value={lead.value.toLocaleString('fr-FR') + ' €'} highlight />
               </div>
               {lead.notes && (
                 <div className="bg-[#141414] border border-[#242424] rounded-xl p-4">

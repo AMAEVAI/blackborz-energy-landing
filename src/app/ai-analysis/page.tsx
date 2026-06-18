@@ -145,7 +145,7 @@ export default function AIAnalysisPage() {
                     <div className={`text-base font-bold ${potentialConfig[selectedResult.potential].color}`}>{t(potentialConfig[selectedResult.potential].labelKey)}</div>
                     <div className="flex items-center gap-1.5 mt-1">
                       <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-sm font-bold text-emerald-400">{(selectedLead.value / 1000).toFixed(0)}K ₽</span>
+                      <span className="text-sm font-bold text-emerald-400">{(selectedLead.value / 1000).toFixed(0)}K €</span>
                     </div>
                     <p className="text-xs text-[#666] mt-2">{selectedResult.summary}</p>
                   </div>

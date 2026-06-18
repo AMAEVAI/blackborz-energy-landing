@@ -104,7 +104,7 @@ export default function SummarizerPage() {
                         <span className="text-xs text-[#666]">{col.title}</span>
                       </div>
                       <div className="text-sm font-bold text-white">{count}</div>
-                      <div className="text-xs text-[#555]">{val >= 1_000_000 ? `${(val / 1_000_000).toFixed(1)}M` : `${(val / 1_000).toFixed(0)}K`} ₽</div>
+                      <div className="text-xs text-[#555]">{val >= 1_000_000 ? `${(val / 1_000_000).toFixed(1)}M` : `${(val / 1_000).toFixed(0)}K`} €</div>
                     </div>
                   );
                 })}

@@ -71,8 +71,8 @@ export default function KanbanBoard() {
                   {totalValue > 0 && (
                     <span className="text-xs text-white/50">
                       {totalValue >= 1_000_000
-                        ? `${(totalValue / 1_000_000).toFixed(1)}M ₽`
-                        : `${(totalValue / 1_000).toFixed(0)}K ₽`}
+                        ? `${(totalValue / 1_000_000).toFixed(1)}M €`
+                        : `${(totalValue / 1_000).toFixed(0)}K €`}
                     </span>
                   )}
                 </div>
