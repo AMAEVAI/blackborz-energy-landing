@@ -6,7 +6,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const supabase = await createClient();
   const body = await req.json();
 
-  // Convert camelCase to snake_case for DB
   const dbUpdate: Record<string, unknown> = { updated_at: new Date().toISOString() };
   if (body.status !== undefined) dbUpdate.status = body.status;
   if (body.aiScore !== undefined) dbUpdate.ai_score = body.aiScore;

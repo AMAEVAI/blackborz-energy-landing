@@ -32,24 +32,11 @@ export default function SettingsPage() {
           </div>
           <form onSubmit={handleSave} className="p-6 space-y-4">
             <div>
-              <label className="text-xs text-[#666] font-medium uppercase tracking-wide mb-2 block">
-                Anthropic API Key
-              </label>
-              <input
-                type="password"
-                className="w-full px-3 py-2.5 bg-[#0d0d0d] border border-[#242424] rounded-xl text-sm text-white placeholder:text-[#444] focus:outline-none focus:border-[#c8ff00]/40 transition-colors font-mono"
-                placeholder="sk-ant-..."
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-              />
-              <p className="text-xs text-[#555] mt-2">
-                Ключ используется для AI анализа лидов и саммаризации. Устанавливается через переменную окружения <code className="text-[#888]">ANTHROPIC_API_KEY</code>.
-              </p>
+              <label className="text-xs text-[#666] font-medium uppercase tracking-wide mb-2 block">Anthropic API Key</label>
+              <input type="password" className="w-full px-3 py-2.5 bg-[#0d0d0d] border border-[#242424] rounded-xl text-sm text-white placeholder:text-[#444] focus:outline-none focus:border-[#c8ff00]/40 transition-colors font-mono" placeholder="sk-ant-..." value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
+              <p className="text-xs text-[#555] mt-2">Ключ используется для AI анализа лидов и саммаризации. Устанавливается через переменную окружения <code className="text-[#888]">ANTHROPIC_API_KEY</code>.</p>
             </div>
-            <button
-              type="submit"
-              className="flex items-center gap-2 px-4 py-2 bg-[#c8ff00] hover:bg-[#b8ef00] text-black rounded-xl text-sm font-bold transition-all"
-            >
+            <button type="submit" className="flex items-center gap-2 px-4 py-2 bg-[#c8ff00] hover:bg-[#b8ef00] text-black rounded-xl text-sm font-bold transition-all">
               {saved ? <CheckCircle className="w-4 h-4" /> : null}
               {saved ? 'Сохранено!' : 'Сохранить'}
             </button>
@@ -59,22 +46,10 @@ export default function SettingsPage() {
         <div className="bg-[#141414] border border-[#242424] rounded-2xl p-6">
           <h2 className="text-sm font-semibold text-white mb-4">О системе</h2>
           <div className="space-y-2 text-sm text-[#666]">
-            <div className="flex justify-between">
-              <span>Версия</span>
-              <span className="text-[#888]">1.0.0</span>
-            </div>
-            <div className="flex justify-between">
-              <span>AI модель</span>
-              <span className="text-[#888]">Claude Haiku</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Компания</span>
-              <span className="text-[#888]">BLACKBORZ ENERGY DRINK</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Основа</span>
-              <span className="text-[#888]">twentyhq/twenty</span>
-            </div>
+            <div className="flex justify-between"><span>Версия</span><span className="text-[#888]">1.0.0</span></div>
+            <div className="flex justify-between"><span>AI модель</span><span className="text-[#888]">Claude Haiku</span></div>
+            <div className="flex justify-between"><span>Компания</span><span className="text-[#888]">BLACKBORZ ENERGY DRINK</span></div>
+            <div className="flex justify-between"><span>Основа</span><span className="text-[#888]">twentyhq/twenty</span></div>
           </div>
         </div>
       </div>

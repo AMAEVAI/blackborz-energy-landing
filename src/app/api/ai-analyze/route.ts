@@ -41,17 +41,12 @@ export async function POST(req: NextRequest) {
     });
 
     const content = message.content[0];
-    if (content.type !== 'text') {
-      throw new Error('Unexpected response type');
-    }
+    if (content.type !== 'text') throw new Error('Unexpected response type');
 
     const result = JSON.parse(content.text);
     return NextResponse.json(result);
   } catch (error) {
     console.error('AI analyze error:', error);
-    return NextResponse.json(
-      { error: 'Ошибка AI анализа' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Ошибка AI анализа' }, { status: 500 });
   }
 }

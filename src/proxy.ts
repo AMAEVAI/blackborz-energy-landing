@@ -6,7 +6,6 @@ const SUPABASE_CONFIGURED =
   !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export async function proxy(request: NextRequest) {
-  // Demo mode: no auth required when Supabase is not configured
   if (!SUPABASE_CONFIGURED) {
     if (request.nextUrl.pathname === '/login') {
       const url = request.nextUrl.clone();

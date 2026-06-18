@@ -47,7 +47,6 @@ export default function DashboardPage() {
 
   return (
     <div className="p-8">
-      {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-1">
           <Zap className="w-5 h-5 text-[#c8ff00]" fill="currentColor" />
@@ -57,7 +56,6 @@ export default function DashboardPage() {
         <p className="text-[#666] text-sm mt-1">Общая картина продаж энергетиков</p>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
         <StatsCard icon={Users} label="Всего лидов" value={stats.totalLeads} sub="в базе" />
         <StatsCard icon={TrendingUp} label="Новые" value={stats.newLeads} sub="требуют внимания" />
@@ -68,7 +66,6 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Pipeline by stage */}
         <div className="lg:col-span-2 bg-[#141414] border border-[#242424] rounded-2xl p-6">
           <h2 className="text-base font-bold text-white mb-4">Пайплайн по этапам</h2>
           <div className="space-y-3">
@@ -79,10 +76,7 @@ export default function DashboardPage() {
                 <div key={col.id} className="flex items-center gap-3">
                   <div className="w-24 text-xs text-[#666] flex-shrink-0">{col.title}</div>
                   <div className="flex-1 h-2 bg-[#1a1a1a] rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{ width: `${pct}%`, backgroundColor: col.color }}
-                    />
+                    <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: col.color }} />
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0 w-32 justify-end">
                     <span className="text-xs text-[#555]">{col.count} лидов</span>
@@ -94,13 +88,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* High priority */}
         <div className="bg-[#141414] border border-[#242424] rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-base font-bold text-white">Горячие лиды</h2>
-            <Link href="/leads" className="text-xs text-[#c8ff00] hover:underline">
-              Все →
-            </Link>
+            <Link href="/leads" className="text-xs text-[#c8ff00] hover:underline">Все →</Link>
           </div>
           <div className="space-y-3">
             {highPriority.length > 0 ? (
@@ -120,7 +111,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Recent activity */}
         <div className="lg:col-span-3 bg-[#141414] border border-[#242424] rounded-2xl p-6">
           <h2 className="text-base font-bold text-white mb-4">Последняя активность</h2>
           <div className="space-y-2">

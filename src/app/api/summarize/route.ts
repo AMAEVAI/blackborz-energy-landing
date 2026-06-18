@@ -59,16 +59,11 @@ ${leadsText}
     });
 
     const content = message.content[0];
-    if (content.type !== 'text') {
-      throw new Error('Unexpected response type');
-    }
+    if (content.type !== 'text') throw new Error('Unexpected response type');
 
     return NextResponse.json({ summary: content.text });
   } catch (error) {
     console.error('Summarize error:', error);
-    return NextResponse.json(
-      { error: 'Ошибка создания резюме' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Ошибка создания резюме' }, { status: 500 });
   }
 }
