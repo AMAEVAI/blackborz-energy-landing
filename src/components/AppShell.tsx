@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Users, Briefcase, CheckSquare, Brain,
   Settings, LogOut, Zap, Menu, X, Contact, Building2,
-  Activity, FileText,
+  Activity, FileText, BarChart3,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useT } from '@/lib/i18n/LanguageContext';
@@ -19,6 +19,7 @@ const navItems = [
   { href: '/deals',       icon: Briefcase,        key: 'nav.deals' },
   { href: '/tasks',       icon: CheckSquare,      key: 'nav.tasks' },
   { href: '/activities',  icon: Activity,         key: 'nav.activities' },
+  { href: '/statistics',  icon: BarChart3,        key: 'nav.statistics' },
   { href: '/ai-analysis', icon: Brain,            key: 'nav.ai' },
   { href: '/reports',     icon: FileText,         key: 'nav.reports' },
 ];
