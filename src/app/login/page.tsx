@@ -75,7 +75,12 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-[#444] mt-4">Нет аккаунта? Обратитесь к администратору</p>
+        <p className="text-center text-xs text-[#444] mt-4">
+          Нет аккаунта или проблемы со входом?{' '}
+          <a href="mailto:amaev.pro@gmail.com" className="text-[#c8ff00] hover:underline">
+            Напишите администратору
+          </a>
+        </p>
       </div>
     </div>
   );
