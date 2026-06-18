@@ -85,25 +85,25 @@ export const useLeadsStore = create<LeadsState>((set, get) => ({
   },
 
   addLead: async (lead) => {
-    if (!SUPABASE_CONFIGURED) {
-      const now = new Date().toISOString();
-      const newLead: Lead = {
-        ...lead,
-        id: crypto.randomUUID(),
-        createdAt: now,
-        updatedAt: now,
-      };
-      set((s) => ({ leads: [newLead, ...s.leads] }));
-      return;
+    const now = new Date().toISOString();
+    const tempId = crypto.randomUUID();
+    const newLead: Lead = { ...lead, id: tempId, createdAt: now, updatedAt: now };
+    set((s) => ({ leads: [newLead, ...s.leads] }));
+    if (!SUPABASE_CONFIGURED) return;
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(lead),
+      });
+      if (res.ok) {
+        const row = await res.json();
+        const saved = rowToLead(row);
+        set((s) => ({ leads: s.leads.map((l) => (l.id === tempId ? saved : l)) }));
+      }
+    } catch {
+      // keep the optimistic entry in session
     }
-    const res = await fetch('/api/leads', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(lead),
-    });
-    if (!res.ok) return;
-    const row = await res.json();
-    set((s) => ({ leads: [rowToLead(row), ...s.leads] }));
   },
 
   updateLead: async (id, updates) => {

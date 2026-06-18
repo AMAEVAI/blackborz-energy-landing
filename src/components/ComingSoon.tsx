@@ -38,7 +38,7 @@ export default function ComingSoon({ icon: Icon, title, description, features }:
           </div>
           <div className="mt-6 pt-6 border-t border-[#1e1e1e] flex items-center justify-center gap-2 text-xs text-[#444]">
             <Zap className="w-3 h-3 text-[#c8ff00]" />
-            Powered by BLACKBORZ ENERGY CRM
+            Powered by BLACKBORZ CRM
           </div>
         </div>
       </div>
