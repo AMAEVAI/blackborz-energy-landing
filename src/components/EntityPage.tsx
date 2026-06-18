@@ -26,10 +26,10 @@ export default function EntityPage({ type, config, icon: Icon }: { type: string;
         setRows(await res.json());
       } else {
         const d = await res.json().catch(() => ({}));
-        setLoadError(d.error || 'Таблица не найдена в Supabase. Запустите SQL из инструкции.');
+        setLoadError(d.error || t('error.dbNotFound'));
       }
     } catch {
-      setLoadError('Ошибка подключения к базе данных.');
+      setLoadError(t('error.dbConnect'));
     } finally {
       setLoading(false);
     }
@@ -187,12 +187,12 @@ function EntityModal({ type, config, onClose, onCreated }: { type: string; confi
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Ошибка сохранения. Проверьте настройки Supabase.');
+        setError(data.error || t('error.save'));
         return;
       }
       onCreated(data);
     } catch {
-      setError('Ошибка сети. Проверьте подключение.');
+      setError(t('error.network'));
     } finally {
       setSaving(false);
     }

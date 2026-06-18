@@ -124,7 +124,7 @@ export default function SummarizerPage() {
                     <div key={col.id} className="bg-[#0d0d0d] rounded-xl p-3 border border-[#1a1a1a]">
                       <div className="flex items-center gap-1.5 mb-1">
                         <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: col.color }} />
-                        <span className="text-xs text-[#666]">{col.title}</span>
+                        <span className="text-xs text-[#666]">{t(`status.${col.id}`)}</span>
                       </div>
                       <div className="text-sm font-bold text-white">{count}</div>
                       <div className="text-xs text-[#555]">{val >= 1_000_000 ? `${(val / 1_000_000).toFixed(1)}M` : `${(val / 1_000).toFixed(0)}K`} €</div>
@@ -172,7 +172,7 @@ export default function SummarizerPage() {
                     <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: col?.color }} />
                     <div>
                       <div className="font-semibold text-white text-sm">{lead.name}</div>
-                      <div className="text-xs text-[#666]">{lead.company} · {col?.title}</div>
+                      <div className="text-xs text-[#666]">{lead.company} · {col ? t(`status.${col.id}`) : ''}</div>
                     </div>
                   </div>
                   <button onClick={() => generateLeadSummary(lead)} disabled={isLoading} className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 text-purple-400 rounded-lg text-xs font-medium transition-all disabled:opacity-50">

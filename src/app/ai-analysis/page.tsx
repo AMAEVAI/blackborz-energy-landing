@@ -35,14 +35,14 @@ export default function AIAnalysisPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setErrorMsg(data.error || 'Ошибка AI анализа');
+        setErrorMsg(data.error || t('ai.error'));
         return;
       }
       setResults((p) => ({ ...p, [lead.id]: data as AIAnalysisResult }));
       updateLead(lead.id, { aiScore: data.score, aiAnalysis: data.summary });
     } catch (e) {
       console.error(e);
-      setErrorMsg(e instanceof Error ? e.message : 'Ошибка сети');
+      setErrorMsg(e instanceof Error ? e.message : t('error.network'));
     } finally {
       setAnalyzing((p) => ({ ...p, [lead.id]: false }));
     }
@@ -147,7 +147,7 @@ export default function AIAnalysisPage() {
           {selectedResult && selectedLead ? (
             <div className="bg-[#141414] border border-[#242424] rounded-2xl overflow-hidden">
               <div className="px-5 py-4 border-b border-[#1e1e1e] bg-[#c8ff00]/5">
-                <div className="text-xs text-[#c8ff00] font-bold uppercase tracking-wide mb-1">AI Детальный анализ</div>
+                <div className="text-xs text-[#c8ff00] font-bold uppercase tracking-wide mb-1">{t('ai.detailedAnalysis')}</div>
                 <div className="text-lg font-bold text-white">{selectedLead.name}</div>
                 <div className="text-sm text-[#888]">{selectedLead.company}</div>
               </div>

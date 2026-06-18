@@ -250,7 +250,7 @@ export default function ActivitiesPage() {
                       {event.type === 'ai' && (
                         <div className="mt-2 pt-2 border-t border-[#1e1e1e] flex items-center gap-1.5">
                           <Brain className="w-3 h-3 text-purple-400" />
-                          <span className="text-xs text-[#888]">{t('modal.aiScore')}: {t(`source.${event.source}`)}</span>
+                          <span className="text-xs text-[#888]">{t('modal.source')}: {t(`source.${event.source}`)}</span>
                         </div>
                       )}
                     </div>

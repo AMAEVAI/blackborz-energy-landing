@@ -226,6 +226,15 @@ const ru: Dict = {
   'activity.aiAnalyzed': 'AI анализ завершён',
   'activity.empty': 'Активностей пока нет',
   'activity.from': 'из',
+  // error messages
+  'error.dbNotFound': 'Таблица не найдена в Supabase. Запустите SQL из инструкции.',
+  'error.dbConnect': 'Ошибка подключения к базе данных.',
+  'error.save': 'Ошибка сохранения. Проверьте настройки Supabase.',
+  'error.network': 'Ошибка сети. Проверьте подключение.',
+  'ai.error': 'Ошибка AI анализа',
+  'ai.detailedAnalysis': 'AI Детальный анализ',
+  'settings.apiKeyHint': 'Ключ используется для AI анализа лидов. Устанавливается через переменную окружения',
+  'settings.saved': 'Сохранено!',
 };
 
 const fr: Dict = {
@@ -432,6 +441,15 @@ const fr: Dict = {
   'activity.aiAnalyzed': 'Analyse IA terminée',
   'activity.empty': 'Aucune activité pour le moment',
   'activity.from': 'de',
+  // error messages
+  'error.dbNotFound': 'Table introuvable dans Supabase. Exécutez le SQL de la documentation.',
+  'error.dbConnect': 'Erreur de connexion à la base de données.',
+  'error.save': 'Erreur d\'enregistrement. Vérifiez la configuration Supabase.',
+  'error.network': 'Erreur réseau. Vérifiez votre connexion.',
+  'ai.error': 'Erreur d\'analyse IA',
+  'ai.detailedAnalysis': 'Analyse IA détaillée',
+  'settings.apiKeyHint': 'Clé utilisée pour l\'analyse IA des prospects. Via la variable d\'environnement',
+  'settings.saved': 'Enregistré !',
 };
 
 const en: Dict = {
@@ -638,6 +656,15 @@ const en: Dict = {
   'activity.aiAnalyzed': 'AI analysis complete',
   'activity.empty': 'No activities yet',
   'activity.from': 'from',
+  // error messages
+  'error.dbNotFound': 'Table not found in Supabase. Run the SQL from the docs.',
+  'error.dbConnect': 'Database connection error.',
+  'error.save': 'Save error. Check your Supabase settings.',
+  'error.network': 'Network error. Check your connection.',
+  'ai.error': 'AI analysis error',
+  'ai.detailedAnalysis': 'AI Detailed Analysis',
+  'settings.apiKeyHint': 'Used for AI lead analysis. Set via the environment variable',
+  'settings.saved': 'Saved!',
 };
 
 export const dict: Record<Lang, Dict> = { ru, fr, en };

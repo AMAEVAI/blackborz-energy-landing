@@ -119,7 +119,7 @@ export default function StatisticsPage() {
         <KpiCard label={t('stat.pipeline')} value={fmtEur(totalPipeline)} sub={`${activeLeads.length} ${t('stat.leads')}`} icon={Layers} accent />
         <KpiCard label={t('stat.wonRevenue')} value={fmtEur(totalWon)} sub={`${wonLeads.length} ${t('stat.deals')}`} icon={Euro} />
         <KpiCard label={t('stat.avgDeal')} value={fmtEur(avgDeal)} sub={t('stat.avgDealSub')} icon={TrendingUp} />
-        <KpiCard label={t('stat.conversion')} value={`${conversionRate}%`} sub="win rate" icon={Target} />
+        <KpiCard label={t('stat.conversion')} value={`${conversionRate}%`} sub={t('dash.winRate')} icon={Target} />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
