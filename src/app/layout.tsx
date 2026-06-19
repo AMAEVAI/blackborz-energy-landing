@@ -4,6 +4,7 @@ import './globals.css';
 import AppShell from '@/components/AppShell';
 import DataProvider from '@/components/DataProvider';
 import { LanguageProvider } from '@/lib/i18n/LanguageContext';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const inter = Inter({ subsets: ['cyrillic', 'latin'] });
 
@@ -50,6 +51,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <main className="min-h-screen">{children}</main>
           )}
         </LanguageProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
